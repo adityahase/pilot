@@ -5,3 +5,7 @@
 tags
 node_modules
 __pycache__
+
+# OpenTofu state
+.terraform*
+terraform.tfstate*
