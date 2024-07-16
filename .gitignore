@@ -9,3 +9,10 @@ __pycache__
 # OpenTofu state
 .terraform*
 terraform.tfstate*
+
+# CDKTF
+dist/
+imports/*
+!imports/__init__.py
+cdktf.out
+cdktf.log
