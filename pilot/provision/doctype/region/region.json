@@ -7,7 +7,17 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "cloud_provider"
+  "cloud_provider",
+  "status",
+  "column_break_quxt",
+  "region_slug",
+  "provision",
+  "destroy",
+  "credentials_section",
+  "access_token",
+  "networking_section",
+  "vpc_cidr_block",
+  "vpc_id"
  ],
  "fields": [
   {
@@ -30,11 +40,82 @@
    "options": "Cloud Provider",
    "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nPending\nActive\nArchived"
+  },
+  {
+   "fieldname": "networking_section",
+   "fieldtype": "Section Break",
+   "label": "Networking"
+  },
+  {
+   "fieldname": "vpc_cidr_block",
+   "fieldtype": "Data",
+   "label": "VPC CIDR Block"
+  },
+  {
+   "fieldname": "vpc_id",
+   "fieldtype": "Data",
+   "label": "VPC ID"
+  },
+  {
+   "fieldname": "credentials_section",
+   "fieldtype": "Section Break",
+   "label": "Credentials"
+  },
+  {
+   "fieldname": "access_token",
+   "fieldtype": "Password",
+   "label": "Access Token"
+  },
+  {
+   "fieldname": "column_break_quxt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "provision",
+   "fieldtype": "Button",
+   "label": "Provision",
+   "options": "provision"
+  },
+  {
+   "fieldname": "region_slug",
+   "fieldtype": "Data",
+   "label": "Region Slug",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "destroy",
+   "fieldtype": "Button",
+   "label": "Destroy",
+   "options": "destroy"
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-07-18 15:42:03.445128",
+ "links": [
+  {
+   "link_doctype": "Provision Action",
+   "link_fieldname": "region"
+  },
+  {
+   "link_doctype": "Provision Declaration",
+   "link_fieldname": "region"
+  },
+  {
+   "link_doctype": "Provision Plan",
+   "link_fieldname": "region"
+  },
+  {
+   "link_doctype": "Provision State",
+   "link_fieldname": "region"
+  }
+ ],
+ "modified": "2024-08-09 11:54:46.764057",
  "modified_by": "Administrator",
  "module": "Provision",
  "name": "Region",
