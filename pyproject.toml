@@ -9,6 +9,9 @@ readme = "README.md"
 dynamic = ["version"]
 dependencies = [
     # "frappe~=15.0.0" # Installed and managed by bench.
+    # Terraform CDKTF dependencies
+    "cdktf==0.20.8",
+    "cdktf-cdktf-provider-digitalocean==11.5.2",
 ]
 
 [build-system]
