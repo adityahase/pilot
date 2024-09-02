@@ -1,0 +1,51 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Cloud Provider",
+  "modified": "2024-07-18 15:06:55.547378",
+  "name": "gcp",
+  "title": "Google Cloud Platform"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cloud Provider",
+  "modified": "2024-07-18 15:07:08.445334",
+  "name": "aws",
+  "title": "Amazon Web Services"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cloud Provider",
+  "modified": "2024-07-18 15:07:24.320908",
+  "name": "hetzner",
+  "title": "Hetzner"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cloud Provider",
+  "modified": "2024-07-18 15:07:45.851905",
+  "name": "scaleway",
+  "title": "Scaleway"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cloud Provider",
+  "modified": "2024-07-18 15:09:23.268876",
+  "name": "azure",
+  "title": "Microsoft Azure"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cloud Provider",
+  "modified": "2024-07-18 15:09:48.356069",
+  "name": "oci",
+  "title": "Oracle Cloud Infrastructure"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cloud Provider",
+  "modified": "2024-07-18 15:08:06.299876",
+  "name": "do",
+  "title": "DigitalOcean"
+ }
+]
