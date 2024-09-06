@@ -76,6 +76,8 @@ class OpenTofu:
 			pretty_state = self.tofu.pretty_show()
 		except Exception:
 			pass
+		if not state:
+			state = "{}"
 		return self.create_state(state, pretty_state)
 
 	def init(self) -> str:
