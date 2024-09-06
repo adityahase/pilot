@@ -13,6 +13,7 @@ from constructs import Construct
 from pilot.provision.doctype.provision_declaration.provision_declaration import ProvisionDeclaration
 from pilot.provision.doctype.provision_plan.provision_plan import ProvisionPlan
 from pilot.provision.doctype.provision_state.provision_state import ProvisionState
+from pilot.provision.providers.aws import AWS
 from pilot.provision.providers.digitalocean import DigitalOcean
 
 if TYPE_CHECKING:
@@ -34,8 +35,10 @@ class PilotStack(TerraformStack):
 		stack_directory = os.path.join(directory, "stacks", region.name)
 		backend_file = os.path.join(stack_directory, "terraform.tfstate")
 		LocalBackend(self, path=backend_file)
-
-		DigitalOcean().provision(self, scope, name, region)
+		if region.cloud_provider == "aws":
+			AWS().provision(self, scope, name, region)
+		elif region.cloud_provider == "digitalocean":
+			DigitalOcean().provision(self, scope, name, region)
 
 
 class OpenTofu:
