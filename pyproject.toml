@@ -12,6 +12,7 @@ dependencies = [
     # Terraform CDKTF dependencies
     "cdktf==0.20.8",
     "cdktf-cdktf-provider-digitalocean==11.5.2",
+    "containerd==1.5.3",
 ]
 
 [build-system]
