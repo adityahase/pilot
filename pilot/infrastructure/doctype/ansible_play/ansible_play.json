@@ -1,0 +1,184 @@
+{
+ "actions": [],
+ "autoname": "UUID",
+ "creation": "2025-05-21 17:13:01.041072",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "play",
+  "playbook",
+  "node",
+  "column_break_viwf",
+  "start",
+  "end",
+  "duration",
+  "statistics_section",
+  "ok",
+  "changed",
+  "failures",
+  "unrechable",
+  "column_break_ewum",
+  "skipped",
+  "rescued",
+  "ignored",
+  "processed",
+  "section_break_cvlr",
+  "variables"
+ ],
+ "fields": [
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nRunning\nSuccess\nFailure",
+   "read_only": 1
+  },
+  {
+   "fieldname": "play",
+   "fieldtype": "Data",
+   "label": "Play",
+   "read_only": 1
+  },
+  {
+   "fieldname": "playbook",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Playbook",
+   "read_only": 1
+  },
+  {
+   "fieldname": "node",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Node",
+   "options": "Node",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_viwf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "start",
+   "fieldtype": "Datetime",
+   "label": "Start",
+   "read_only": 1
+  },
+  {
+   "fieldname": "end",
+   "fieldtype": "Datetime",
+   "label": "End",
+   "read_only": 1
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Duration",
+   "label": "Duration",
+   "read_only": 1
+  },
+  {
+   "fieldname": "statistics_section",
+   "fieldtype": "Section Break",
+   "label": "Statistics"
+  },
+  {
+   "fieldname": "ok",
+   "fieldtype": "Int",
+   "label": "Ok",
+   "read_only": 1
+  },
+  {
+   "fieldname": "changed",
+   "fieldtype": "Int",
+   "label": "Changed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "failures",
+   "fieldtype": "Int",
+   "label": "Failures",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unrechable",
+   "fieldtype": "Int",
+   "label": "Unrechable",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ewum",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "skipped",
+   "fieldtype": "Int",
+   "label": "Skipped",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rescued",
+   "fieldtype": "Int",
+   "label": "Rescued",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ignored",
+   "fieldtype": "Int",
+   "label": "Ignored",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_cvlr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "variables",
+   "fieldtype": "Code",
+   "label": "Variables",
+   "read_only": 1
+  },
+  {
+   "fieldname": "processed",
+   "fieldtype": "Int",
+   "label": "Processed",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Ansible Task",
+   "link_fieldname": "play"
+  }
+ ],
+ "modified": "2025-05-23 12:50:24.873089",
+ "modified_by": "Administrator",
+ "module": "Infrastructure",
+ "name": "Ansible Play",
+ "naming_rule": "UUID",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "play"
+}
