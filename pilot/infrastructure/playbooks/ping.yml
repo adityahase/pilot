@@ -1,5 +1,5 @@
 ---
-- name: Ping Server
+- name: Ping Node
   hosts: all
   become: yes
   become_user: root
