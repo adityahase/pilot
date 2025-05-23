@@ -11,7 +11,9 @@
   "column_break_tacb",
   "private_ip_address",
   "private_vlan_id",
-  "private_mac_address"
+  "private_mac_address",
+  "ssh_section",
+  "root_public_key"
  ],
  "fields": [
   {
@@ -65,12 +67,28 @@
    "label": "Private Mac Address",
    "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "fieldname": "ssh_section",
+   "fieldtype": "Section Break",
+   "label": "SSH"
+  },
+  {
+   "fieldname": "root_public_key",
+   "fieldtype": "Code",
+   "label": "Root Public Key",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-05-21 17:03:54.355263",
+ "links": [
+  {
+   "link_doctype": "Ansible Play",
+   "link_fieldname": "node"
+  }
+ ],
+ "modified": "2025-05-21 19:45:46.766868",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Node",
