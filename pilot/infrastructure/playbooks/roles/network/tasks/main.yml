@@ -1,0 +1,12 @@
+---
+- name: Create Netplan Configuration File
+  template:
+    src: netplan.yaml
+    dest: /etc/netplan/99-pilot.yaml
+    mode: '0600'
+
+- name: Generate Netplan Configuration
+  shell: netplan generate
+
+- name: Apply Netplan Configuration
+  shell: netplan apply

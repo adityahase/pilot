@@ -22,7 +22,7 @@ def reconnect_on_failure():
 
 
 class Ansible:
-	def __init__(self, node, playbook, user="root", variables=None, port=22):
+	def __init__(self, node, playbook, user="ubuntu", variables=None, port=22):
 		self.node = node
 		self.playbook = playbook
 		self.playbook_path = frappe.get_app_path("pilot", "infrastructure", "playbooks", self.playbook)

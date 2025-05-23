@@ -10,9 +10,11 @@ from pilot.infrastructure.ansible import Ansible
 class Node(Document):
 	@frappe.whitelist()
 	def ping(self):
-		Ansible(
-			playbook="ping.yml",
-			node=self,
-			user="ubuntu",
-			port="22",
-		).run()
+		self.ansible("ping.yml").run()
+
+	@frappe.whitelist()
+	def setup(self):
+		self.ansible("node.yml", variables={"node": self.as_dict()}).run()
+
+	def ansible(self, playbook, variables=None):
+		return Ansible(self, playbook=playbook, variables=variables)

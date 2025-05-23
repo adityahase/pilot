@@ -3,11 +3,17 @@
 
 frappe.ui.form.on("Node", {
 	refresh(frm) {
-		const ping_actions = [[__("Ping"), "ping"]];
+		const actions = [
+			[__("Ping"), "ping", false],
+			[__("Setup"), "setup", true],
+		];
 
-		for (const [label, method] of ping_actions) {
+		for (const [label, method, confirm] of actions) {
 			// eslint-disable-next-line no-inner-declarations
 			async function callback() {
+				if (confirm && !(await frappe_confirm(label))) {
+					return;
+				}
 				const res = await frm.call(method);
 				if (res.message) {
 					frappe.msgprint(res.message);
@@ -19,3 +25,13 @@ frappe.ui.form.on("Node", {
 		}
 	},
 });
+
+async function frappe_confirm(label) {
+	return new Promise((r) => {
+		frappe.confirm(
+			`Are you sure you want to ${label.toLowerCase()}?`,
+			() => r(true),
+			() => r(false)
+		);
+	});
+}
