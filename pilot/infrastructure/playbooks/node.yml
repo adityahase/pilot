@@ -7,3 +7,4 @@
 
   roles:
     - role: network
+    - role: firecracker

@@ -1,0 +1,48 @@
+---
+- name: Create Firecracker directory
+  ansible.builtin.file:
+    name: /opt/firecracker/
+    mode: 0755
+    state: directory
+
+- name: Download Firecracker archive
+  ansible.builtin.get_url:
+    url: https://github.com/firecracker-microvm/firecracker/releases/download/v1.12.0/firecracker-v1.12.0-x86_64.tgz
+    dest: /tmp
+    checksum: sha256:https://github.com/firecracker-microvm/firecracker/releases/download/v1.12.0/firecracker-v1.12.0-x86_64.tgz.sha256.txt
+
+- name: Unarchive Firecracker archive
+  ansible.builtin.unarchive:
+    src: /tmp/firecracker-v1.12.0-x86_64.tgz
+    dest: /tmp
+    remote_src: yes
+
+- name: Copy Firecracker binaries
+  ansible.builtin.copy:
+    src: "/tmp/release-v1.12.0-x86_64/{{ item }}-v1.12.0-x86_64"
+    dest: "/opt/firecracker/{{ item }}"
+    mode: 0755
+    remote_src: yes
+  with_items:
+    - firecracker
+    - jailer
+    - seccompiler-bin
+
+- name: Download firectl Binary
+  ansible.builtin.get_url:
+    url: https://github.com/firecracker-microvm/firectl/releases/download/v0.2.0/firectl-v0.2.0
+    checksum: sha256:https://github.com/firecracker-microvm/firectl/releases/download/v0.2.0/firectl-v0.2.0.sha256
+    dest: /opt/firecracker/firectl
+    mode: 0755
+
+- name: Create symlink to Firecracker binaries
+  ansible.builtin.file:
+    src: "/opt/firecracker/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: 0755
+    state: link
+  with_items:
+    - firecracker
+    - jailer
+    - seccompiler-bin
+    - firectl
