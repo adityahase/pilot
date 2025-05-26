@@ -1,0 +1,1 @@
+web: QUART_APP=agent.web:app quart run
