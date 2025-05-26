@@ -1,0 +1,8 @@
+{
+    "experimental": true,
+    "icc": false,
+    "iptables": true,
+    "live-restore": true,
+    "no-new-privileges": true,
+    "userland-proxy": false
+}

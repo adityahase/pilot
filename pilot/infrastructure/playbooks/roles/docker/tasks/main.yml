@@ -1,0 +1,58 @@
+---
+- name: Remove old Docker packages
+  ansible.builtin.apt:
+    state: absent
+    force: yes
+    pkg:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+
+- name: Install Docker dependencies
+  ansible.builtin.apt:
+    state: present
+    force: yes
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+
+- name: Add Docker repository key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu noble stable
+    state: present
+    update_cache: true
+
+- name: Install Docker
+  ansible.builtin.apt:
+    name: docker-ce
+    state: present
+
+- name: Add Ubuntu user to Docker group
+  ansible.builtin.user:
+    name: ubuntu
+    groups:
+      - docker
+    append: true
+
+- name: Setup Docker metrics
+  ansible.builtin.template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: Restart Docker Daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: docker
+    state: restarted
+
+- name: Get Docker Info
+  ansible.builtin.command: docker info
