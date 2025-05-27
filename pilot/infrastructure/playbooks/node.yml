@@ -9,3 +9,4 @@
     - role: network
     - role: firecracker
     - role: docker
+    - role: agent
