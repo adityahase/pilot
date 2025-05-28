@@ -8,3 +8,18 @@
     ip link add name firecracker0 type bridge
     ip addr add 10.0.0.1/24 dev firecracker0
     ip link set dev firecracker0 up
+
+- name: Setup IP forwarding
+  shell: sysctl -w net.ipv4.ip_forward=1
+
+- name: Delete iptables rules
+  shell: |
+    iptables --table nat --delete POSTROUTING --out-interface eth0 -j MASQUERADE
+    iptables --delete FORWARD --in-interface firecracker0 -j ACCEPT
+  ignore_errors: true
+
+- name: Setup NAT on firecracker bridge
+  shell: |
+    iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE
+    iptables --insert FORWARD --in-interface firecracker0 -j ACCEPT
+    iptables -P FORWARD ACCEPT
