@@ -5,14 +5,23 @@
 - name: Download Ubuntu 24.04 rootfs
   shell: wget -O ubuntu-24.04.squashfs.upstream "https://s3.amazonaws.com/spec.ccfc.min/firecracker-ci/v1.12/x86_64/ubuntu-24.04.squashfs"
 
-- name: Create ssh key
-  shell: ssh-keygen -t ed25519 -f id_ed25519 -N ""
+- name: Export rootfs
+  shell: |
+    rm -rf squashfs-root || true
+    unsquashfs ubuntu-24.04.squashfs.upstream
 
 - name: Add ssh key to rootfs
   shell: |
-    unsquashfs ubuntu-24.04.squashfs.upstream
+    rm id_ed25519* || true
+    ssh-keygen -t ed25519 -f id_ed25519 -N ""
     cp -v id_ed25519.pub squashfs-root/root/.ssh/authorized_keys
     cp -v id_ed25519 ./ubuntu-24.04.id_ed25519
+
+- name: Setup DNS resolvers
+  shell: echo "nameserver 8.8.8.8" > squashfs-root/etc/resolv.conf
+
+- name: Make ext4 filesystem from rootfs
+  shell: |
     chown -R root:root squashfs-root
     truncate -s 400M ubuntu-24.04.ext4
     mkfs.ext4 -d squashfs-root -F ubuntu-24.04.ext4
