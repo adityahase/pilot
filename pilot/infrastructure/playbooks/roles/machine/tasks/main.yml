@@ -1,0 +1,36 @@
+---
+- name: Download Linux kernel
+  shell: wget https://s3.amazonaws.com/spec.ccfc.min/firecracker-ci/v1.12/x86_64/vmlinux-6.1.128
+
+- name: Download Ubuntu 24.04 rootfs
+  shell: wget -O ubuntu-24.04.squashfs.upstream "https://s3.amazonaws.com/spec.ccfc.min/firecracker-ci/v1.12/x86_64/ubuntu-24.04.squashfs"
+
+- name: Create ssh key
+  shell: ssh-keygen -t ed25519 -f id_ed25519 -N ""
+
+- name: Add ssh key to rootfs
+  shell: |
+    unsquashfs ubuntu-24.04.squashfs.upstream
+    cp -v id_ed25519.pub squashfs-root/root/.ssh/authorized_keys
+    cp -v id_ed25519 ./ubuntu-24.04.id_ed25519
+    chown -R root:root squashfs-root
+    truncate -s 400M ubuntu-24.04.ext4
+    mkfs.ext4 -d squashfs-root -F ubuntu-24.04.ext4
+
+- name: Delete firecracker tap device
+  shell: ip link del tap0
+  ignore_errors: true
+
+- name: Create firecracker tap device
+  shell: |
+    ip tuntap add dev tap0 mode tap
+    ip link set dev tap0 master firecracker0
+    ip link set dev tap0 up
+
+- name: Copy Firecracker VM config
+  template:
+    src: vmconfig.json
+    dest: vmconfig.json
+
+- name: Start Firecracker VM
+  shell: nohup firecracker --config-file vmconfig.json </dev/null > vm.stdout 2 > vm.stderr &
