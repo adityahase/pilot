@@ -1,0 +1,10 @@
+---
+- name: Delete firecracker bridge
+  shell: ip link del firecracker0
+  ignore_errors: true
+
+- name: Create firecracker bridge
+  shell: |
+    ip link add name firecracker0 type bridge
+    ip addr add 10.0.0.1/24 dev firecracker0
+    ip link set dev firecracker0 up
