@@ -1,25 +1,13 @@
 ---
-- name: Create firecracker bridge device file
-  template:
-    src: bridge.netdev
-    dest: /etc/systemd/network/firecracker0.netdev
-    owner: root
-    group: root
-    mode: 064
+- name: Delete firecracker bridge
+  shell: ip link del firecracker0
+  ignore_errors: true
 
-- name: Create firecracker bridge network file
-  template:
-    src: bridge.network
-    dest: /etc/systemd/network/firecracker0.network
-    owner: root
-    group: root
-    mode: 0644
-
-- name: Restart systemd-networkd
-  systemd:
-    name: systemd-networkd
-    enabled: yes
-    state: restarted
+- name: Create firecracker bridge
+  shell: |
+    ip link add name firecracker0 type bridge
+    ip addr add 10.0.0.1/24 dev firecracker0
+    ip link set dev firecracker0 up
 
 - name: Setup IP forwarding
   shell: sysctl -w net.ipv4.ip_forward=1
