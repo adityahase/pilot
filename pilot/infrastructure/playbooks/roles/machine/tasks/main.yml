@@ -46,4 +46,4 @@
   ignore_errors: true
 
 - name: Start Firecracker VM
-  shell: nohup firecracker --api-sock firecracker.socket --config-file vmconfig.json </dev/null 1> vm.stdout 2> vm.stderr &
+  shell: systemd-run --working-directory=/root firecracker --api-sock firecracker.socket --config-file vmconfig.json
