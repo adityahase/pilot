@@ -41,9 +41,39 @@
     src: vmconfig.json
     dest: vmconfig.json
 
-- name: Delete Firecracker VM api socket
-  shell: rm firecracker.socket
+- name: Create chroot directory
+  file:
+    path: firecracker-root
+    state: directory
+
+- name: Reset chroot VM directory
+  shell: rm -rf firecracker-root/firecracker/1/root/*
+  ignore_errors: true
+  # 1 is the VM ID, it can be anything, but must match the jailer --id
+
+- name: Copy VM files
+  shell: |
+    mkdir -p firecracker-root/firecracker/1/root
+    cp -v vmconfig.json firecracker-root/firecracker/1/root/
+    cp -v ubuntu-24.04.ext4 firecracker-root/firecracker/1/root/
+    cp -v vmlinux-6.1.128 firecracker-root/firecracker/1/root/
+  ignore_errors: true
+
+- name: Fix permissions for VM block device
+  shell: chmod 1000 firecracker-root/firecracker/1/root/ubuntu-24.04.ext4
+  # We'll run the jailer as user 1, so we need to ensure the block device is accessible
+  # This should probably be fixed with chown instead
+
+- name: Stop Firecracker VMs
+  shell: pkill firecracker
   ignore_errors: true
 
 - name: Start Firecracker VM
-  shell: systemd-run --working-directory=/root firecracker --api-sock firecracker.socket --config-file vmconfig.json
+  shell: |
+    jailer \
+    --exec-file /usr/local/bin/firecracker \
+    --id 1 \
+    --uid 1000 --gid 1000 \
+    --daemonize \
+    --chroot-base-dir firecracker-root \
+    -- --api-sock firecracker.socket --config-file vmconfig.json
