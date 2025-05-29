@@ -1,0 +1,102 @@
+{
+    "disks": [
+        {
+            "device": "/dev/nvme0n1",
+            "partitions": [
+                {
+                    "label": "uefi",
+                    "number": 1,
+                    "size": 536870912,
+                    "useAllAvailableSpace": false
+                },
+                {
+                    "label": "boot",
+                    "number": 2,
+                    "size": 536870912,
+                    "useAllAvailableSpace": false
+                },
+                {
+                    "label": "root",
+                    "number": 3,
+                    "size": 21474836480,
+                    "useAllAvailableSpace": false
+                },
+                {
+                    "label": "data",
+                    "number": 4,
+                    "useAllAvailableSpace": true
+                }
+            ]
+        },
+        {
+            "device": "/dev/nvme1n1",
+            "partitions": [
+                {
+                    "label": "boot",
+                    "number": 1,
+                    "size": 536870912,
+                    "useAllAvailableSpace": false
+                },
+                {
+                    "label": "root",
+                    "number": 2,
+                    "size": 21474836480,
+                    "useAllAvailableSpace": false
+                },
+                {
+                    "label": "data",
+                    "number": 3,
+                    "useAllAvailableSpace": true
+                }
+            ]
+        }
+    ],
+    "filesystems": [
+        {
+            "device": "/dev/nvme0n1p1",
+            "format": "fat32",
+            "mountpoint": "/boot/efi"
+        },
+        {
+            "device": "/dev/md0",
+            "format": "ext4",
+            "mountpoint": "/boot"
+        },
+        {
+            "device": "/dev/md1",
+            "format": "ext4",
+            "mountpoint": "/"
+        },
+        {
+            "device": "/dev/nvme0n1p4",
+            "format": "ext4",
+            "mountpoint": "/data1"
+        },
+        {
+            "device": "/dev/nvme1n1p3",
+            "format": "ext4",
+            "mountpoint": "/data2"
+        }
+    ],
+    "raids": [
+        {
+            "devices": [
+                "/dev/nvme0n1p2",
+                "/dev/nvme1n1p1"
+            ],
+            "level": "raid_level_1",
+            "name": "/dev/md0"
+        },
+        {
+            "devices": [
+                "/dev/nvme0n1p3",
+                "/dev/nvme1n1p2"
+            ],
+            "level": "raid_level_1",
+            "name": "/dev/md1"
+        }
+    ],
+    "zfs": {
+        "pools": []
+    }
+}
