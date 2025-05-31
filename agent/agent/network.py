@@ -1,6 +1,8 @@
 import asyncio
 import shlex
 
+CHROOT_PATH = "/host"
+
 
 class SubprocessError(Exception):
 	pass
@@ -71,6 +73,7 @@ class FirecrackerBridge:
 
 	async def run(self, cmd):
 		args = shlex.split(cmd)
+		args = ["chroot", CHROOT_PATH, *args]
 		process = await asyncio.create_subprocess_exec(
 			*args,
 			stdin=asyncio.subprocess.DEVNULL,
