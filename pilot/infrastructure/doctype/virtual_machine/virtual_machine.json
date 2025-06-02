@@ -1,0 +1,176 @@
+{
+ "actions": [],
+ "autoname": "UUID",
+ "creation": "2025-05-29 08:44:03.247118",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "hostname",
+  "node",
+  "status",
+  "column_break_nynw",
+  "image",
+  "kernel",
+  "networking_section",
+  "ip_address",
+  "gateway",
+  "subnet_mask",
+  "column_break_rzbo",
+  "mac_address",
+  "tap_device",
+  "resources_section",
+  "vcpu",
+  "disk",
+  "column_break_rexw",
+  "memory"
+ ],
+ "fields": [
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nRunning\nStopped\nTerminated",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_nynw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hostname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Hostname",
+   "reqd": 1
+  },
+  {
+   "fieldname": "networking_section",
+   "fieldtype": "Section Break",
+   "label": "Networking"
+  },
+  {
+   "fieldname": "ip_address",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "IP Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_rzbo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mac_address",
+   "fieldtype": "Data",
+   "label": "Mac Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "resources_section",
+   "fieldtype": "Section Break",
+   "label": "Resources"
+  },
+  {
+   "default": "1",
+   "fieldname": "vcpu",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "vCPU",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_rexw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "512",
+   "fieldname": "memory",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Memory",
+   "reqd": 1
+  },
+  {
+   "fieldname": "node",
+   "fieldtype": "Link",
+   "label": "Node",
+   "link_filters": "[[\"Node\",\"status\",\"=\",\"Active\"]]",
+   "options": "Node",
+   "reqd": 1
+  },
+  {
+   "default": "500M",
+   "fieldname": "disk",
+   "fieldtype": "Int",
+   "label": "Disk",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gateway",
+   "fieldtype": "Data",
+   "label": "Gateway",
+   "read_only": 1
+  },
+  {
+   "fieldname": "subnet_mask",
+   "fieldtype": "Data",
+   "label": "Subnet Mask",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tap_device",
+   "fieldtype": "Data",
+   "label": "TAP Device",
+   "read_only": 1
+  },
+  {
+   "default": "6.1.128",
+   "fieldname": "kernel",
+   "fieldtype": "Select",
+   "label": "Kernel",
+   "options": "6.1.128",
+   "reqd": 1
+  },
+  {
+   "default": "ubuntu-24.04",
+   "fieldname": "image",
+   "fieldtype": "Select",
+   "label": "Image",
+   "options": "ubuntu-24.04",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-02 23:24:49.260693",
+ "modified_by": "Administrator",
+ "module": "Infrastructure",
+ "name": "Virtual Machine",
+ "naming_rule": "UUID",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "hostname"
+}

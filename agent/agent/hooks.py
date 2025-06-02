@@ -23,7 +23,3 @@ async def startup():
 		"ubuntu-24.04.squashfs",
 	]
 	await Machine.prepare_rootfs(rootfs)
-
-	machine = Machine("1")
-	await machine.setup()
-	await machine.start()
