@@ -2,7 +2,7 @@
 - name: Copy Agent repository
   ansible.posix.synchronize:
     src: ../../../../../../agent/
-    dest: /agent/
+    dest: /root/agent-repository/
     rsync_opts:
       - --exclude=env
       - --exclude=*.pyc
@@ -10,7 +10,7 @@
       - --exclude=__pycache__
 
 - name: Build Agent docker image
-  command: "docker build -t agent /agent"
+  command: "docker build -t agent /root/agent-repository/"
 
 - name: Remove old Agent container
   command: "docker rm --force agent"
