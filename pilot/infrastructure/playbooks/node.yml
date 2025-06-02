@@ -10,4 +10,3 @@
     - role: firecracker
     - role: docker
     - role: agent
-    - role: machine

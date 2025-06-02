@@ -10,7 +10,8 @@ requires-python = ">=3.13"
 license = "AGPL-3.0-only"
 
 dependencies = [
-    "Quart==0.20.0"
+    "Quart==0.20.0",
+    "requests==2.32.3",
 ]
 
 [build-system]
