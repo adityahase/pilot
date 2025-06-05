@@ -1,11 +1,7 @@
 import asyncio
 import shlex
 
-CHROOT_PATH = "/host"
-
-
-class SubprocessError(Exception):
-	pass
+from agent.machine import CHROOT_PATH, SubprocessError
 
 
 class FirecrackerBridge:

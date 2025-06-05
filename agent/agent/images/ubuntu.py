@@ -7,7 +7,7 @@ import tempfile
 
 import requests
 
-from agent.machine import ARTIFACTS_ROOT, CHROOT_PATH
+from agent.machine import ARTIFACTS_ROOT, CHROOT_PATH, SubprocessError
 
 UBUNTU_RELEASES = {
 	"focal": "20.04",
@@ -16,14 +16,11 @@ UBUNTU_RELEASES = {
 }
 
 
-class SubprocessError(Exception):
-	pass
-
-
 class Ubuntu:
 	@classmethod
 	async def run(cls, cmd, shell=False):
 		cmd = f"chroot {CHROOT_PATH} {cmd}"
+		print(f"Running command: {cmd}")
 		if shell:
 			process = await asyncio.create_subprocess_shell(
 				cmd,
@@ -41,6 +38,10 @@ class Ubuntu:
 			)
 		await process.wait()
 		if process.returncode != 0:
+			print(f"Command failed: {cmd}")
+			print(f"Return code: {process.returncode}")
+			print(f"Error output: {await process.stderr.read()}")
+			print(f"Standard output: {await process.stdout.read()}")
 			raise SubprocessError
 		return process
 
