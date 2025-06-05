@@ -11,6 +11,8 @@
   "column_break_nynw",
   "image",
   "kernel",
+  "root_filesystem",
+  "initial_ram_disk",
   "networking_section",
   "ip_address",
   "gateway",
@@ -129,26 +131,37 @@
    "read_only": 1
   },
   {
-   "default": "6.1.128",
+   "fetch_from": "image.kernel",
    "fieldname": "kernel",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "label": "Kernel",
-   "options": "6.1.128",
    "reqd": 1
   },
   {
-   "default": "ubuntu-24.04",
    "fieldname": "image",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Image",
-   "options": "ubuntu-24.04",
+   "options": "Image",
    "reqd": 1
+  },
+  {
+   "fetch_from": "image.root_filesystem",
+   "fieldname": "root_filesystem",
+   "fieldtype": "Data",
+   "label": "Root Filesystem",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "image.initial_ram_disk",
+   "fieldname": "initial_ram_disk",
+   "fieldtype": "Data",
+   "label": "Initial Ram Disk"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-02 23:24:49.260693",
+ "modified": "2025-06-05 15:08:09.346528",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",

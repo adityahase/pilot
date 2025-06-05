@@ -26,6 +26,7 @@ class Machine:
 		self.initrd_file = f"{self.root}/initrd.img"
 		self.stdout_file = f"{self.root}/stdout.log"
 		self.stderr_file = f"{self.root}/stderr.log"
+		self.config = {}
 
 		self.uid = 1000  # User ID for the jailer
 		self.gid = 1000  # Group ID for the jailer
@@ -54,12 +55,17 @@ class Machine:
 
 	async def get_config_from_data(self):
 		data = await self.load(self.name)
+		self.config = data
 		config = copy.deepcopy(DEFAULT_CONFIG)
 		network = data.get("network")
+		boot = data.get("boot")
 		config["boot-source"]["boot_args"] += (
 			f" ip={network['ip_address']}::{network['gateway']}:{network['subnet_mask']}::pilot0:off"
 		)
-		config["boot-source"]["initrd_path"] = "initrd.img"
+		if boot.get("initial_ram_disk"):
+			# Not all machines use an initrd, so we check if it is needed
+			# Ubuntu cloud images need initrd
+			config["boot-source"]["initrd_path"] = "initrd.img"
 		config["network-interfaces"] = [
 			{
 				"iface_id": "pilot0",
@@ -91,15 +97,21 @@ class Machine:
 			json.dump(config, f, indent=4)
 
 	async def setup_kernel(self):
-		await self.run(f"cp {ARTIFACTS_ROOT}/vmlinux-6.1.128 {self.kernel_file}")
+		boot = self.config.get("boot", {})
+		self.kernel_source = os.path.join(ARTIFACTS_ROOT, boot.get("kernel"))
+		await self.run(f"cp {self.kernel_source} {self.kernel_file}")
 
 	async def setup_initrd(self):
-		if not os.path.exists(os.path.join(CHROOT_PATH, ARTIFACTS_ROOT.lstrip("/"), "ubuntu-24.04.rootfs")):
+		boot = self.config.get("boot", {})
+		if not boot.get("initial_ram_disk"):
 			return
-		await self.run(f"cp {ARTIFACTS_ROOT}/ubuntu-24.04.rootfs {self.initrd_file}")
+		self.initrd_source = os.path.join(ARTIFACTS_ROOT, boot.get("initial_ram_disk"))
+		await self.run(f"cp {self.initrd_source} {self.initrd_file}")
 
 	async def setup_rootfs(self):
-		await self.run(f"cp {ARTIFACTS_ROOT}/ubuntu-24.04.ext4 {self.rootfs_file}")
+		boot = self.config.get("boot", {})
+		self.rootfs_source = os.path.join(ARTIFACTS_ROOT, boot.get("root_filesystem"))
+		await self.run(f"cp {self.rootfs_source} {self.rootfs_file}")
 		await self.run(f"chown {self.uid}:{self.gid} {self.rootfs_file}")
 		await self.run(f"chmod 600 {self.rootfs_file}")
 

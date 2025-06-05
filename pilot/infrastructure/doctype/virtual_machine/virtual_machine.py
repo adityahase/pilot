@@ -19,8 +19,11 @@ class VirtualMachine(Document):
 		return {
 			"name": self.name,
 			"hostname": self.hostname,
-			"image": self.image,
-			"kernel": f"vmlinux-{self.kernel}",
+			"boot": {
+				"kernel": self.kernel,
+				"root_filesystem": self.root_filesystem,
+				"initial_ram_disk": self.initial_ram_disk,
+			},
 			"resources": {
 				"vcpu": self.vcpu,
 				"memory": self.memory,
