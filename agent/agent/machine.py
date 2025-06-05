@@ -23,6 +23,7 @@ class Machine:
 		self.kernel_file = f"{self.root}/vmlinux.bin"
 		self.rootfs_file = f"{self.root}/rootfs.ext4"
 		self.api_socket = f"{self.root}/firecracker.socket"
+		self.initrd_file = f"{self.root}/initrd.img"
 		self.stdout_file = f"{self.root}/stdout.log"
 		self.stderr_file = f"{self.root}/stderr.log"
 
@@ -58,6 +59,7 @@ class Machine:
 		config["boot-source"]["boot_args"] += (
 			f" ip={network['ip_address']}::{network['gateway']}:{network['subnet_mask']}::pilot0:off"
 		)
+		config["boot-source"]["initrd_path"] = "initrd.img"
 		config["network-interfaces"] = [
 			{
 				"iface_id": "pilot0",
@@ -78,6 +80,7 @@ class Machine:
 		os.makedirs(root, exist_ok=True)
 		await self.setup_config(await self.get_config_from_data())
 		await self.setup_kernel()
+		await self.setup_initrd()
 		await self.setup_rootfs()
 		await self.setup_tap_device()
 
@@ -89,6 +92,11 @@ class Machine:
 
 	async def setup_kernel(self):
 		await self.run(f"cp {ARTIFACTS_ROOT}/vmlinux-6.1.128 {self.kernel_file}")
+
+	async def setup_initrd(self):
+		if not os.path.exists(os.path.join(CHROOT_PATH, ARTIFACTS_ROOT.lstrip("/"), "ubuntu-24.04.rootfs")):
+			return
+		await self.run(f"cp {ARTIFACTS_ROOT}/ubuntu-24.04.rootfs {self.initrd_file}")
 
 	async def setup_rootfs(self):
 		await self.run(f"cp {ARTIFACTS_ROOT}/ubuntu-24.04.ext4 {self.rootfs_file}")
