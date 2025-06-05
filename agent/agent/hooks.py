@@ -1,5 +1,6 @@
 from agent.machine import Machine
 from agent.network import FirecrackerBridge
+from agent.ubuntu import Ubuntu
 
 EGRESS_INTERFACE = "eth0"
 
@@ -23,3 +24,9 @@ async def startup():
 		"ubuntu-24.04.squashfs",
 	]
 	await Machine.prepare_rootfs(rootfs)
+
+	releases = [
+		"focal",
+		"noble",
+	]
+	await Ubuntu.setup_images(releases)

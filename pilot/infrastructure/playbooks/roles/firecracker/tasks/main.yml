@@ -46,3 +46,12 @@
     - jailer
     - seccompiler-bin
     - firectl
+
+- name: Install extract-linux dependencies
+  ansible.builtin.apt:
+    update_cache: yes
+    pkg:
+      - bzip2
+      - lz4
+      - binutils
+    state: present
