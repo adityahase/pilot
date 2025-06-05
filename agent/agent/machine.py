@@ -23,6 +23,8 @@ class Machine:
 		self.kernel_file = f"{self.root}/vmlinux.bin"
 		self.rootfs_file = f"{self.root}/rootfs.ext4"
 		self.api_socket = f"{self.root}/firecracker.socket"
+		self.stdout_file = f"{self.root}/stdout.log"
+		self.stderr_file = f"{self.root}/stderr.log"
 
 		self.uid = 1000  # User ID for the jailer
 		self.gid = 1000  # Group ID for the jailer
@@ -104,8 +106,11 @@ class Machine:
 
 	async def start(self):
 		command = (
+			"systemd-run "
+			f"--property=StandardOutput=file:{self.stdout_file} "
+			f"--property=StandardError=file:{self.stderr_file} "
 			f"jailer --id {self.name} --uid {self.uid} --gid {self.gid} "
-			f"--daemonize --exec-file {FIRECRACKER_BINARY} "
+			f"--exec-file {FIRECRACKER_BINARY} "
 			f"--chroot-base-dir {JAILER_ROOT} "
 			f"-- --api-sock firecracker.socket --config-file config.json"
 		)
