@@ -103,12 +103,17 @@ class Ubuntu:
 		extract_script = os.path.join(ARTIFACTS_ROOT, "extract-vmlinux")
 		vmlinuz_file = os.path.join(ARTIFACTS_ROOT, f"{release}.vmlinuz")
 		kernel_file = os.path.join(CHROOT_PATH, ARTIFACTS_ROOT.lstrip("/"), f"{release}.kernel")
+		if os.path.exists(kernel_file):
+			return
 		await cls.run(f"{extract_script} {vmlinuz_file} > {kernel_file}", shell=True)
 
 	@classmethod
 	async def prepare_rootfs(cls, release):
 		archive = os.path.join(ARTIFACTS_ROOT, f"{release}.root.tar.xz")
 		rootfs = os.path.join(ARTIFACTS_ROOT, f"{release}.rootfs")
+
+		if os.path.exists(os.path.join(CHROOT_PATH, rootfs.lstrip("/"))):
+			return
 
 		await cls.run(f"truncate -s 2G {rootfs}")
 		await cls.run(f"mkfs.ext4 -L 'cloudimg-rootfs' -F {rootfs}")
