@@ -29,8 +29,9 @@ async def startup():
 	]
 	await Firecracker.prepare_rootfs(firecracker_rootfs)
 
-	releases = [
+	ubuntu_releases = [
 		"focal",
+		"jammy",
 		"noble",
 	]
-	await Ubuntu.setup_images(releases)
+	await Ubuntu.setup_images(ubuntu_releases)
