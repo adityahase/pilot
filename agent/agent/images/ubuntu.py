@@ -103,7 +103,7 @@ class Ubuntu:
 		extract_script = os.path.join(ARTIFACTS_ROOT, "extract-vmlinux")
 		vmlinuz_file = os.path.join(ARTIFACTS_ROOT, f"{release}.vmlinuz")
 		kernel_file = os.path.join(CHROOT_PATH, ARTIFACTS_ROOT.lstrip("/"), f"{release}.kernel")
-		if os.path.exists(kernel_file):
+		if os.path.exists(kernel_file):  # TODO: Run a better check for completeness
 			return
 		await cls.run(f"{extract_script} {vmlinuz_file} > {kernel_file}", shell=True)
 
@@ -113,6 +113,7 @@ class Ubuntu:
 		rootfs = os.path.join(ARTIFACTS_ROOT, f"{release}.rootfs")
 
 		if os.path.exists(os.path.join(CHROOT_PATH, rootfs.lstrip("/"))):
+			# TODO: Run a better check for completeness
 			return
 
 		await cls.run(f"truncate -s 2G {rootfs}")

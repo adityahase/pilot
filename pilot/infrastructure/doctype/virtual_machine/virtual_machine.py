@@ -30,7 +30,7 @@ class VirtualMachine(Document):
 				"disk": self.disk,
 			},
 			"network": {
-				"tap_device": self.tap_device or "tap1",
+				"tap_device": self.tap_device or "tap0",
 				"mac_address": self.mac_address or "00:00:00:00:00:01",
 				"ip_address": self.ip_address or "10.0.0.100",
 				"gateway": self.gateway or "10.0.0.1",

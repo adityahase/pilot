@@ -60,7 +60,7 @@ class Machine:
 		network = data.get("network")
 		boot = data.get("boot")
 		config["boot-source"]["boot_args"] += (
-			f" ip={network['ip_address']}::{network['gateway']}:{network['subnet_mask']}::pilot0:off"
+			f" ip={network['ip_address']}::{network['gateway']}:{network['subnet_mask']}::eth0:off"
 		)
 		if boot.get("initial_ram_disk"):
 			# Not all machines use an initrd, so we check if it is needed
@@ -68,7 +68,7 @@ class Machine:
 			config["boot-source"]["initrd_path"] = "initrd.img"
 		config["network-interfaces"] = [
 			{
-				"iface_id": "pilot0",
+				"iface_id": "eth0",
 				"guest_mac": network["mac_address"],
 				"host_dev_name": network["tap_device"],
 			}
