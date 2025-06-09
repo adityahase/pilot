@@ -4,6 +4,7 @@
 # import frappe
 from pprint import pprint
 
+import yaml
 from frappe.model.document import Document
 
 from pilot.agent import Agent
@@ -11,6 +12,19 @@ from pilot.agent import Agent
 
 class VirtualMachine(Document):
 	def after_insert(self):
+		self.set_metadata()
+		self.save()
+		self.create_machine()
+
+	def set_metadata(self):
+		metadata = {
+			"local-hostname": self.hostname,
+			"instance-id": self.name,
+		}
+		self.metadata = yaml.dump(metadata)
+		self.save()
+
+	def create_machine(self):
 		agent = Agent("localhost:8000")  # TODO: Replace with Node ip or hostname
 		machine = self.get_machine_details()
 		agent.create_machine(machine)
@@ -24,6 +38,7 @@ class VirtualMachine(Document):
 				"root_filesystem": self.root_filesystem,
 				"initial_ram_disk": self.initial_ram_disk,
 			},
+			"metadata": self.metadata,
 			"resources": {
 				"vcpu": self.vcpu,
 				"memory": self.memory,
