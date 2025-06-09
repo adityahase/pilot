@@ -3,19 +3,38 @@
   ansible.posix.synchronize:
     src: ../../../../../../agent/
     dest: /root/agent-repository/
+    recursive: true
+    delete: true
     rsync_opts:
       - --exclude=env
       - --exclude=*.pyc
       - --exclude=*.pyo
       - --exclude=__pycache__
 
+- name: Fix permissions for Agent repository
+  ansible.builtin.file:
+    path: /root/agent-repository/
+    state: directory
+    owner: root
+    group: root
+
+- name: Create Agent git repository
+  ansible.builtin.shell: |
+      git config --global init.defaultBranch main || true
+      git init || true
+      git add --all || true
+      git -c user.name='Aditya' -c user.email='aditya@frappe.io' commit --no-verify --allow-empty --message 'chore: WIP' || true
+  args:
+    chdir: /root/agent-repository/
+  ignore_errors: true
+
 - name: Build Agent docker image
-  command: "docker build -t agent /root/agent-repository/"
+  command: "docker build -f /root/agent-repository/development/Dockerfile -t agent /root/agent-repository/"
 
 - name: Remove old Agent container
   command: "docker rm --force agent"
   ignore_errors: true
 
 - name: Run Agent container
-  command: "docker run --detach --publish 127.0.0.1:8000:8000 --privileged --net=host --pid=host -v /:/host --restart always --name agent agent"
+  command: "docker run --detach --publish 127.0.0.1:8000:8000 --publish 127.0.0.1:8080:8080 --privileged --net=host --pid=host -v /:/host --restart always --name agent agent"
 

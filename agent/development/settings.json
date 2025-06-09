@@ -1,0 +1,6 @@
+{
+    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "ruff.configuration": "/agent/pyproject.toml",
+    "security.workspace.trust.enabled": false,
+    "workbench.colorTheme": "Default Dark Modern"
+}

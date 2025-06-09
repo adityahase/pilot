@@ -1,0 +1,2 @@
+web: QUART_APP=agent.web:app quart run --host 0.0.0.0 --port 8000 --reload
+code: PASSWORD=code PORT=8080 code-server --bind-addr 0.0.0.0:8080 --open /agent
