@@ -30,6 +30,7 @@ class Machine:
 		self.stdout_file = f"{self.root}/stdout.log"
 		self.stderr_file = f"{self.root}/stderr.log"
 		self.metadata_file = f"{self.root}/metadata.json"
+		self.tap_device = None
 		self.config = {}
 
 		self.uid = 1000  # User ID for the jailer
@@ -57,6 +58,9 @@ class Machine:
 		root = os.path.join(CHROOT_PATH, self.root.lstrip("/"))
 		shutil.rmtree(os.path.dirname(root))
 
+		await self.get_config_from_data()
+		await self.delete_tap_device()
+
 		state_file = os.path.join(CHROOT_PATH, FIRECRACKER_DIRECTORY.lstrip("/"), f"{self.name}.json")
 		# Remove machine state file
 		os.remove(state_file)
@@ -82,6 +86,7 @@ class Machine:
 		self.config = data
 		config = copy.deepcopy(DEFAULT_CONFIG)
 		network = data.get("network")
+		self.tap_device = network["tap_device"]
 		boot = data.get("boot")
 		config["boot-source"]["boot_args"] += (
 			f" ip={network['ip_address']}::{network['gateway']}:{network['subnet_mask']}::eth0:off"
@@ -159,13 +164,15 @@ class Machine:
 		await self.run(f"chmod 600 {self.rootfs_file}")
 
 	async def setup_tap_device(self):
+		await self.run(f"ip tuntap add dev {self.tap_device} mode tap")
+		await self.run(f"ip link set dev {self.tap_device} master firecracker0")
+		await self.run(f"ip link set dev {self.tap_device} up")
+
+	async def delete_tap_device(self):
 		try:
-			await self.run("ip link del tap0")
-		except Exception:
-			pass
-		await self.run("ip tuntap add dev tap0 mode tap")
-		await self.run("ip link set dev tap0 master firecracker0")
-		await self.run("ip link set dev tap0 up")
+			await self.run(f"ip link del {self.tap_device}")
+		except Exception as e:
+			print(f"Error deleting tap device {self.tap_device}: {e}")
 
 	async def start(self):
 		command = (

@@ -9,6 +9,10 @@ from pilot.agent import Agent
 
 
 class VirtualMachine(Document):
+	def before_insert(self):
+		self.set_mac_address()
+		self.set_tap_device()
+
 	def after_insert(self):
 		self.set_meta_data()
 		self.set_user_data()
@@ -55,9 +59,9 @@ class VirtualMachine(Document):
 				"disk": self.disk,
 			},
 			"network": {
-				"tap_device": self.tap_device or "tap0",
-				"mac_address": self.mac_address or "00:00:00:00:00:01",
-				"ip_address": self.ip_address or "10.0.0.100",
+				"tap_device": self.tap_device,
+				"mac_address": self.mac_address,
+				"ip_address": self.ip_address,
 				"gateway": self.gateway or "10.0.0.1",
 				"subnet_mask": self.subnet_mask or "255.255.255.0",
 			},
@@ -83,3 +87,16 @@ class VirtualMachine(Document):
 		else:
 			formatted_user_data = ""
 		self.user_data = f"#cloud-config\n{formatted_user_data}"
+
+	def set_tap_device(self):
+		if not self.tap_device:
+			machines = frappe.db.count(
+				"Virtual Machine",
+				{"status": ("!=", "Terminated"), "node": self.node},
+			)
+			self.tap_device = f"tap{machines}"
+
+	def set_mac_address(self):
+		decimals = self.ip_address.split(".")
+		hexes = [f"{int(d):02x}" for d in decimals]
+		self.mac_address = "6e:fc:" + ":".join(hexes)
