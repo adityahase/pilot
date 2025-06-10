@@ -26,7 +26,10 @@
   "column_break_rexw",
   "memory",
   "metadata_section",
-  "metadata"
+  "meta_data",
+  "column_break_fdvn",
+  "ssh_key",
+  "user_data"
  ],
  "fields": [
   {
@@ -37,6 +40,7 @@
    "in_standard_filter": 1,
    "label": "Status",
    "options": "Draft\nRunning\nStopped\nTerminated",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -160,22 +164,38 @@
    "label": "Initial Ram Disk"
   },
   {
-   "fieldname": "metadata",
+   "fieldname": "metadata_section",
+   "fieldtype": "Section Break",
+   "label": "cloud-init"
+  },
+  {
+   "fieldname": "column_break_fdvn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ssh_key",
+   "fieldtype": "Link",
+   "label": "SSH Key",
+   "options": "SSH Key"
+  },
+  {
+   "fieldname": "meta_data",
    "fieldtype": "Code",
-   "label": "Metadata",
+   "label": "Meta Data",
    "options": "YAML",
    "read_only": 1
   },
   {
-   "fieldname": "metadata_section",
-   "fieldtype": "Section Break",
-   "label": "Metadata"
+   "fieldname": "user_data",
+   "fieldtype": "Code",
+   "label": "User Data",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-09 16:45:13.234793",
+ "modified": "2025-06-10 13:38:00.457422",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",

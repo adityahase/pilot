@@ -108,9 +108,10 @@ class Machine:
 		return config
 
 	async def get_metadata_from_data(self):
-		data = self.config
+		data = self.config.get("meta-data")
 		metadata = copy.deepcopy(DEFAULT_METADATA)
-		metadata["meta-data"] = data.get("metadata")
+		metadata["meta-data"] = data.get("meta-data")
+		metadata["user-data"] = data.get("user-data")
 		return metadata
 
 	async def setup(self):

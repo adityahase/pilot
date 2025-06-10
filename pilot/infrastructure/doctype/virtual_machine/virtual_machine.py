@@ -10,15 +10,8 @@ from pilot.agent import Agent
 
 class VirtualMachine(Document):
 	def after_insert(self):
-		self.set_metadata()
-		self.save()
-
-	def set_metadata(self):
-		metadata = {
-			"local-hostname": self.hostname,
-			"instance-id": self.name,
-		}
-		self.metadata = yaml.dump(metadata)
+		self.set_meta_data()
+		self.set_user_data()
 		self.save()
 
 	@frappe.whitelist()
@@ -46,7 +39,10 @@ class VirtualMachine(Document):
 				"root_filesystem": self.root_filesystem,
 				"initial_ram_disk": self.initial_ram_disk,
 			},
-			"metadata": self.metadata,
+			"meta-data": {
+				"meta-data": self.meta_data,
+				"user-data": self.user_data,
+			},
 			"resources": {
 				"vcpu": self.vcpu,
 				"memory": self.memory,
@@ -64,3 +60,20 @@ class VirtualMachine(Document):
 	@property
 	def agent(self):
 		return Agent("localhost:8000")  # TODO: Replace with Node ip or hostname
+
+	def set_meta_data(self):
+		meta_data = {
+			"local-hostname": self.hostname,
+			"instance-id": self.name,
+		}
+		self.meta_data = yaml.dump(meta_data)
+
+	def set_user_data(self):
+		if self.ssh_key:
+			ssh_public_key = frappe.db.get_value("SSH Key", self.ssh_key, "public_key")
+			user_data = {"users": [{"name": "root", "ssh_authorized_keys": [ssh_public_key]}]}
+			formatted_user_data = yaml.dump(user_data)
+
+		else:
+			formatted_user_data = ""
+		self.user_data = f"#cloud-config\n{formatted_user_data}"
