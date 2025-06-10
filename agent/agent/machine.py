@@ -3,6 +3,9 @@ import copy
 import json
 import os
 import shlex
+import shutil
+
+import requests_unixsocket
 
 JAILER_ROOT = "/srv/jailer"
 FIRECRACKER_BINARY = "/usr/local/bin/firecracker"
@@ -37,6 +40,22 @@ class Machine:
 		name = data["name"]
 		await cls.save(name, data)
 		return Machine(name)
+
+	async def terminate(self):
+		await self.stop()
+		await self.cleanup()
+
+	async def stop(self):
+		return self.client.post("/actions", {"action_type": "SendCtrlAltDel"})
+
+	async def cleanup(self):
+		# Remove jailer root directotry
+		root = os.path.join(CHROOT_PATH, self.root.lstrip("/"))
+		shutil.rmtree(root)
+
+		state_file = os.path.join(CHROOT_PATH, FIRECRACKER_DIRECTORY.lstrip("/"), f"{self.name}.json")
+		# Remove machine state file
+		os.remove(state_file)
 
 	@classmethod
 	async def save(cls, name, data: dict):
@@ -170,6 +189,10 @@ class Machine:
 			raise SubprocessError
 		return process
 
+	@property
+	def client(self):
+		return FirecrackerClient(os.path.join(CHROOT_PATH, self.api_socket.lstrip("/")))
+
 
 DEFAULT_CONFIG = {
 	"boot-source": {
@@ -200,3 +223,21 @@ DEFAULT_METADATA = {
 	"vendor-data": "",
 	"user-data": "",
 }
+
+
+class FirecrackerClient:
+	def __init__(self, socket):
+		self.session = requests_unixsocket.Session()
+		self.base_url = f"http+unix://{socket.replace('/', '%2F')}"
+
+	def get(self, endpoint):
+		return self.session.get(f"{self.base_url}{endpoint}")
+
+	def put(self, endpoint, json=None):
+		return self.session.put(f"{self.base_url}{endpoint}", json=json)
+
+	def patch(self, endpoint, json=None):
+		return self.session.patch(f"{self.base_url}{endpoint}", json=json)
+
+	def post(self, endpoint, json=None):
+		return self.session.post(f"{self.base_url}{endpoint}", json=json)

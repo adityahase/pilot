@@ -23,3 +23,15 @@ async def create_machine():
 	await machine.setup()
 	await machine.start()
 	return jsonify({"name": machine.name})
+
+
+@app.route("/machines/<string:name>/actions/stop", methods=["POST"])
+async def stop_machine(name):
+	await Machine(name).stop()
+	return jsonify({"name": name})
+
+
+@app.route("/machines/<string:name>", methods=["DELETE"])
+async def terminate_machine(name):
+	await Machine(name).terminate()
+	return jsonify({"name": name})
