@@ -17,14 +17,20 @@ class VirtualMachine(Document):
 	@frappe.whitelist()
 	def provision(self):
 		self.create_machine()
+		self.status = "Running"
+		self.save()
 
 	@frappe.whitelist()
 	def stop(self):
 		self.agent.stop_machine(self.name)
+		self.status = "Stopped"
+		self.save()
 
 	@frappe.whitelist()
 	def terminate(self):
 		self.agent.terminate_machine(self.name)
+		self.status = "Terminated"
+		self.save()
 
 	def create_machine(self):
 		machine = self.get_machine_details()

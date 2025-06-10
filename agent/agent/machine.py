@@ -42,16 +42,20 @@ class Machine:
 		return Machine(name)
 
 	async def terminate(self):
-		await self.stop()
+		try:
+			await self.stop()
+		except Exception as e:
+			print(f"Error stopping machine {self.name}: {e}")
 		await self.cleanup()
 
 	async def stop(self):
-		return self.client.post("/actions", {"action_type": "SendCtrlAltDel"})
+		response = self.client.put("/actions", {"action_type": "SendCtrlAltDel"})
+		return response
 
 	async def cleanup(self):
 		# Remove jailer root directotry
 		root = os.path.join(CHROOT_PATH, self.root.lstrip("/"))
-		shutil.rmtree(root)
+		shutil.rmtree(os.path.dirname(root))
 
 		state_file = os.path.join(CHROOT_PATH, FIRECRACKER_DIRECTORY.lstrip("/"), f"{self.name}.json")
 		# Remove machine state file
