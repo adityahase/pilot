@@ -20,10 +20,10 @@
 
 - name: Create Agent git repository
   ansible.builtin.shell: |
-      git config --global init.defaultBranch main || true
-      git init || true
-      git add --all || true
-      git -c user.name='Aditya' -c user.email='aditya@frappe.io' commit --no-verify --allow-empty --message 'chore: WIP' || true
+    git config --global init.defaultBranch main || true
+    git init || true
+    git add --all || true
+    git -c user.name='Aditya' -c user.email='aditya@frappe.io' commit --no-verify --allow-empty --message 'chore: WIP' || true
   args:
     chdir: /root/agent-repository/
   ignore_errors: true
@@ -37,4 +37,3 @@
 
 - name: Run Agent container
   command: "docker run --detach --publish 127.0.0.1:8000:8000 --publish 127.0.0.1:8080:8080 --privileged --net=host --pid=host -v /:/host --restart always --name agent agent"
-

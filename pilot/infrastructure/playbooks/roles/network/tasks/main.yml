@@ -3,7 +3,7 @@
   template:
     src: netplan.yaml
     dest: /etc/netplan/99-pilot.yaml
-    mode: '0600'
+    mode: "0600"
 
 - name: Generate Netplan Configuration
   shell: netplan generate
