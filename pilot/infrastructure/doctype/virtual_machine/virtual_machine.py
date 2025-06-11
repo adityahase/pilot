@@ -1,6 +1,8 @@
 # Copyright (c) 2025, Frappe and contributors
 # For license information, please see license.txt
 
+import random
+
 import frappe
 import yaml
 from frappe.model.document import Document
@@ -12,6 +14,7 @@ class VirtualMachine(Document):
 	def before_insert(self):
 		self.set_mac_address()
 		self.set_tap_device()
+		self.set_user_identifiers()
 
 	def after_insert(self):
 		self.set_meta_data()
@@ -65,6 +68,10 @@ class VirtualMachine(Document):
 				"gateway": self.gateway or "10.0.0.1",
 				"subnet_mask": self.subnet_mask or "255.255.255.0",
 			},
+			"isolation": {
+				"user_id": self.user_id,
+				"group_id": self.group_id,
+			},
 		}
 
 	@property
@@ -100,3 +107,8 @@ class VirtualMachine(Document):
 		decimals = self.ip_address.split(".")
 		hexes = [f"{int(d):02x}" for d in decimals]
 		self.mac_address = "6e:fc:" + ":".join(hexes)
+
+	def set_user_identifiers(self):
+		if not self.user_id or not self.group_id:
+			self.user_id = random.randint(1_000_000_000, 2_000_000_000)
+			self.group_id = self.user_id

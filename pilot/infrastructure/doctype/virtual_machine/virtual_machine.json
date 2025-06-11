@@ -29,7 +29,11 @@
   "meta_data",
   "column_break_fdvn",
   "ssh_key",
-  "user_data"
+  "user_data",
+  "isolation_section",
+  "user_id",
+  "column_break_rzgl",
+  "group_id"
  ],
  "fields": [
   {
@@ -190,12 +194,36 @@
    "fieldtype": "Code",
    "label": "User Data",
    "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "isolation_section",
+   "fieldtype": "Section Break",
+   "label": "Isolation"
+  },
+  {
+   "fieldname": "user_id",
+   "fieldtype": "Int",
+   "label": "User ID",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "group_id",
+   "fieldtype": "Int",
+   "label": "Group ID",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rzgl",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-10 13:38:00.457422",
+ "modified": "2025-06-11 14:50:43.556058",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",

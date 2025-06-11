@@ -33,9 +33,6 @@ class Machine:
 		self.tap_device = None
 		self.config = {}
 
-		self.uid = 1000  # User ID for the jailer
-		self.gid = 1000  # Group ID for the jailer
-
 	@classmethod
 	async def create(cls, data: dict):
 		name = data["name"]
@@ -84,6 +81,11 @@ class Machine:
 	async def get_config_from_data(self):
 		data = await self.load(self.name)
 		self.config = data
+
+		isolation = data["isolation"]
+		self.uid = isolation["user_id"]
+		self.gid = isolation["group_id"]
+
 		config = copy.deepcopy(DEFAULT_CONFIG)
 		network = data.get("network")
 		self.tap_device = network["tap_device"]
