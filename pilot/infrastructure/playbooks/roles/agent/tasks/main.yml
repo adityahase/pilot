@@ -36,4 +36,4 @@
   ignore_errors: true
 
 - name: Run Agent container
-  command: "docker run --detach --publish 127.0.0.1:8000:8000 --publish 127.0.0.1:8080:8080 --privileged --net=host --pid=host -v /:/host --restart always --name agent agent"
+  command: "docker run --detach --privileged --net=host --pid=host -v /:/host --restart always --name agent agent"
