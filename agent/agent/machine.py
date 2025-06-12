@@ -4,6 +4,7 @@ import json
 import os
 import shlex
 import shutil
+import tempfile
 
 import requests_unixsocket
 
@@ -29,7 +30,6 @@ class Machine:
 		self.initrd_file = f"{self.root}/initrd.img"
 		self.stdout_file = f"{self.root}/stdout.log"
 		self.stderr_file = f"{self.root}/stderr.log"
-		self.metadata_file = f"{self.root}/metadata.json"
 		self.tap_device = None
 		self.config = {}
 
@@ -90,10 +90,20 @@ class Machine:
 		network = data.get("network")
 		self.tap_device = network["tap_device"]
 		boot = data.get("boot")
-		config["boot-source"]["boot_args"] += (
-			f" ip={network['ip_address']}::{network['gateway']}:{network['subnet_mask']}::eth0:off"
-			f" ds=nocloud;s=http://169.254.169.254/"
-		)
+		if "meta-data" not in data:
+			config["drives"].append(
+				{
+					"drive_id": "cloud-init",
+					"is_root_device": False,
+					"is_read_only": True,
+					"path_on_host": "cloud-init.vfat",
+				}
+			)
+		else:
+			# If meta-data is not provided then we'll depend on cloud-init to configure the machine
+			config["boot-source"]["boot_args"] += (
+				f" ip={network['ip_address']}::{network['gateway']}:{network['subnet_mask']}::eth0:off"
+			)
 		if boot.get("initial_ram_disk"):
 			# Not all machines use an initrd, so we check if it is needed
 			# Ubuntu cloud images need initrd
@@ -105,11 +115,6 @@ class Machine:
 				"host_dev_name": network["tap_device"],
 			}
 		]
-		config["mmds-config"] = {
-			"version": "V1",
-			"ipv4_address": "169.254.169.254",
-			"network_interfaces": ["eth0"],
-		}
 		config["machine-config"].update(
 			{
 				"vcpu_count": data["resources"]["vcpu"],
@@ -118,18 +123,11 @@ class Machine:
 		)
 		return config
 
-	async def get_metadata_from_data(self):
-		data = self.config.get("meta-data")
-		metadata = copy.deepcopy(DEFAULT_METADATA)
-		metadata["meta-data"] = data.get("meta-data")
-		metadata["user-data"] = data.get("user-data")
-		return metadata
-
 	async def setup(self):
 		root = os.path.join(CHROOT_PATH, self.root.lstrip("/"))
 		os.makedirs(root, exist_ok=True)
 		await self.setup_config(await self.get_config_from_data())
-		await self.setup_metadata(await self.get_metadata_from_data())
+		await self.setup_metadata()
 		await self.setup_kernel()
 		await self.setup_initrd()
 		await self.setup_rootfs()
@@ -141,10 +139,33 @@ class Machine:
 		with open(config_file, "w") as f:
 			json.dump(config, f, indent=4)
 
-	async def setup_metadata(self, metadata: dict):
-		metadata_file = os.path.join(CHROOT_PATH, self.metadata_file.lstrip("/"))
-		with open(metadata_file, "w") as f:
-			json.dump(metadata, f, indent=4)
+	async def setup_metadata(self):
+		# Assumes config is already loaded
+		metadata = self.config.get("meta-data")
+		if metadata:
+			await self.setup_cloud_init(metadata)
+
+	async def setup_cloud_init(self, metadata: dict):
+		cloud_init_image = os.path.join(self.root, "cloud-init.vfat")
+
+		await self.run(f"truncate -s 1M {cloud_init_image}")
+		await self.run(f"mkfs.vfat -n 'cidata' {cloud_init_image}")
+
+		with tempfile.TemporaryDirectory(
+			prefix="cloud-init",
+			dir=os.path.join(CHROOT_PATH, self.root.lstrip("/")),
+			ignore_cleanup_errors=True,
+		) as tempdir:
+			temp = "/".join(tempdir.split("/")[2:])
+			await self.run(f"mount -o loop {cloud_init_image} {temp}")
+
+			for key, value in metadata.items():
+				if not value:
+					continue
+				with open(os.path.join(tempdir, key), "w") as f:
+					f.write(value)
+
+			await self.run(f"umount {temp}")
 
 	async def setup_kernel(self):
 		boot = self.config.get("boot", {})
@@ -184,7 +205,7 @@ class Machine:
 			f"jailer --id {self.name} --uid {self.uid} --gid {self.gid} "
 			f"--exec-file {FIRECRACKER_BINARY} "
 			f"--chroot-base-dir {JAILER_ROOT} "
-			f"-- --api-sock firecracker.socket --config-file config.json --metadata metadata.json"
+			f"-- --api-sock firecracker.socket --config-file config.json"
 		)
 		await self.run(command)
 
@@ -229,13 +250,6 @@ DEFAULT_CONFIG = {
 		"smt": False,
 		"track_dirty_pages": False,
 	},
-}
-
-DEFAULT_METADATA = {
-	"meta-data": "",
-	"network-config": "",
-	"vendor-data": "",
-	"user-data": "",
 }
 
 
