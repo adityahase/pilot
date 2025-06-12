@@ -20,16 +20,18 @@
   "column_break_rzbo",
   "mac_address",
   "tap_device",
+  "subnet_cidr_block",
   "resources_section",
   "vcpu",
   "disk",
   "column_break_rexw",
   "memory",
   "metadata_section",
-  "meta_data",
-  "column_break_fdvn",
   "ssh_key",
   "user_data",
+  "meta_data",
+  "column_break_fdvn",
+  "network_config",
   "isolation_section",
   "user_id",
   "column_break_rzgl",
@@ -69,8 +71,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "IP Address",
-   "reqd": 1
+   "label": "IP Address"
   },
   {
    "fieldname": "column_break_rzbo",
@@ -218,12 +219,27 @@
   {
    "fieldname": "column_break_rzgl",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "10.0.0.0/24",
+   "fieldname": "subnet_cidr_block",
+   "fieldtype": "Data",
+   "label": "Subnet CIDR Block",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "network_config",
+   "fieldtype": "Code",
+   "label": "Network Config",
+   "options": "YAML",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-11 14:50:43.556058",
+ "modified": "2025-06-12 10:04:39.125651",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",

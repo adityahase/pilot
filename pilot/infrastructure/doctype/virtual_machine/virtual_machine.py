@@ -1,6 +1,7 @@
 # Copyright (c) 2025, Frappe and contributors
 # For license information, please see license.txt
 
+import ipaddress
 import random
 
 import frappe
@@ -12,6 +13,7 @@ from pilot.agent import Agent
 
 class VirtualMachine(Document):
 	def before_insert(self):
+		self.set_ip_address()
 		self.set_mac_address()
 		self.set_tap_device()
 		self.set_user_identifiers()
@@ -19,6 +21,7 @@ class VirtualMachine(Document):
 	def after_insert(self):
 		self.set_meta_data()
 		self.set_user_data()
+		self.set_network_config()
 		self.save()
 
 	@frappe.whitelist()
@@ -55,6 +58,7 @@ class VirtualMachine(Document):
 			"meta-data": {
 				"meta-data": self.meta_data,
 				"user-data": self.user_data,
+				"network-config": self.network_config,
 			},
 			"resources": {
 				"vcpu": self.vcpu,
@@ -103,6 +107,20 @@ class VirtualMachine(Document):
 			)
 			self.tap_device = f"tap{machines}"
 
+	def set_ip_address(self):
+		network = ipaddress.IPv4Network(self.subnet_cidr_block)
+		if not self.ip_address:
+			machines = frappe.db.count(
+				"Virtual Machine",
+				{"status": ("!=", "Terminated"), "node": self.node},
+			)
+
+			# Skip the first two addresses in the network.
+			# First is the Network address.
+			# Second is the gateway address.
+			index = 2 + machines
+			self.ip_address = str(network[index])
+
 	def set_mac_address(self):
 		decimals = self.ip_address.split(".")
 		hexes = [f"{int(d):02x}" for d in decimals]
@@ -112,3 +130,27 @@ class VirtualMachine(Document):
 		if not self.user_id or not self.group_id:
 			self.user_id = random.randint(1_000_000_000, 2_000_000_000)
 			self.group_id = self.user_id
+
+	def set_network_config(self):
+		"""
+		Sets the network configuration for the virtual machine.
+		This is used in the user data for cloud-init.
+		"""
+		network = ipaddress.IPv4Network(self.subnet_cidr_block)
+		network_config = {
+			"network": {
+				"version": 2,
+				"ethernets": {
+					"eth0": {
+						"match": {"macaddress": self.mac_address},
+						"addresses": [f"{self.ip_address}/{network.prefixlen}"],
+						"routes": [{"to": "default", "via": self.gateway}],
+						"nameservers": {"addresses": ["8.8.8.8", "8.8.4.4"]},
+						"dhcp4": False,
+						"dhcp6": False,
+					}
+				},
+			}
+		}
+		network_config = yaml.dump(network_config)
+		self.network_config = f"#cloud-config\n{network_config}"
