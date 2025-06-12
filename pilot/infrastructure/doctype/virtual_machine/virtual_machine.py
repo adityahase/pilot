@@ -69,8 +69,8 @@ class VirtualMachine(Document):
 				"tap_device": self.tap_device,
 				"mac_address": self.mac_address,
 				"ip_address": self.ip_address,
-				"gateway": self.gateway or "10.0.0.1",
-				"subnet_mask": self.subnet_mask or "255.255.255.0",
+				"gateway": self.gateway,
+				"subnet_mask": self.subnet_mask,
 			},
 			"isolation": {
 				"user_id": self.user_id,
@@ -109,6 +109,8 @@ class VirtualMachine(Document):
 
 	def set_ip_address(self):
 		network = ipaddress.IPv4Network(self.subnet_cidr_block)
+		self.gateway = str(network[1])
+		self.subnet_mask = str(network.netmask)
 		if not self.ip_address:
 			machines = frappe.db.count(
 				"Virtual Machine",
