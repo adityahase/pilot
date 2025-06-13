@@ -18,3 +18,18 @@ class Node(Document):
 
 	def ansible(self, playbook, variables=None):
 		return Ansible(self, playbook=playbook, variables=variables)
+
+	def on_trash(self):
+		if frappe.conf.developer_mode:
+			self._delete_plays()
+			self._delete_virtual_machines()
+
+	def _delete_plays(self):
+		plays = frappe.get_all("Ansible Play", filters={"node": self.name}, pluck="name")
+		for play in plays:
+			frappe.delete_doc("Ansible Play", play)
+
+	def _delete_virtual_machines(self):
+		machines = frappe.get_all("Virtual Machine", filters={"node": self.name}, pluck="name")
+		for machine in machines:
+			frappe.delete_doc("Virtual Machine", machine)

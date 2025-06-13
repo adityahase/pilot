@@ -75,3 +75,10 @@ def setup():
 		for key, value in image.items():
 			document.set(key, value)
 		document.insert()
+
+
+def cleanup():
+	for node in NODES:
+		if not frappe.db.exists("Node", node["name"]):
+			continue
+		frappe.delete_doc("Node", node["name"])
