@@ -7,6 +7,7 @@ NODES = [
 		"public_ip_address": "62.210.158.82",
 		"private_mac_address": "fake_mac",
 		"private_vlan_id": "2081",
+		"ssh_user": "ubuntu",
 		"status": "Active",
 	},
 	{
@@ -15,6 +16,7 @@ NODES = [
 		"public_ip_address": "62.210.158.140",
 		"private_mac_address": "fake_mac",
 		"private_vlan_id": "1863",
+		"ssh_user": "ubuntu",
 		"status": "Active",
 	},
 	{
@@ -23,6 +25,16 @@ NODES = [
 		"public_ip_address": "62.210.158.144",
 		"private_mac_address": "fake_mac",
 		"private_vlan_id": "2081",
+		"ssh_user": "ubuntu",
+		"status": "Active",
+	},
+	{
+		"name": "d1.metal.frappe.dev",
+		"private_ip_address": "10.139.248.160",
+		"public_ip_address": "157.245.109.147",
+		"private_mac_address": "fake_mac",
+		"private_vlan_id": "2081",
+		"ssh_user": "root",
 		"status": "Active",
 	},
 ]

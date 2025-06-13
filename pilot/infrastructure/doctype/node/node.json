@@ -13,6 +13,7 @@
   "private_vlan_id",
   "private_mac_address",
   "ssh_section",
+  "ssh_user",
   "root_public_key"
  ],
  "fields": [
@@ -78,6 +79,13 @@
    "fieldtype": "Code",
    "label": "Root Public Key",
    "read_only": 1
+  },
+  {
+   "default": "root",
+   "fieldname": "ssh_user",
+   "fieldtype": "Data",
+   "label": "SSH User",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
@@ -88,7 +96,7 @@
    "link_fieldname": "node"
   }
  ],
- "modified": "2025-05-21 19:45:46.766868",
+ "modified": "2025-06-13 13:18:30.287722",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Node",

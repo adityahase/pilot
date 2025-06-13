@@ -17,7 +17,7 @@ class Node(Document):
 		self.ansible("node.yml", variables={"node": self.as_dict()}).run()
 
 	def ansible(self, playbook, variables=None):
-		return Ansible(self, playbook=playbook, variables=variables)
+		return Ansible(self, playbook=playbook, user=self.ssh_user, variables=variables)
 
 	def on_trash(self):
 		if frappe.conf.developer_mode:
