@@ -6,3 +6,6 @@ network:
       link: "{{ node.private_vlan_link }}"
       addresses:
         - "{{ node.private_ip_address }}/24"
+      routes:
+        - to: "{{ node.multicast_cidr_block }}"
+          scope: link

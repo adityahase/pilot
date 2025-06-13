@@ -14,6 +14,8 @@
   "private_ip_address",
   "private_vlan_id",
   "private_mac_address",
+  "column_break_wjwi",
+  "multicast_cidr_block",
   "private_vlan_link",
   "ssh_section",
   "ssh_user",
@@ -107,6 +109,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "224.0.0.0/4",
+   "fieldname": "multicast_cidr_block",
+   "fieldtype": "Data",
+   "label": "Multicast CIDR Block",
+   "reqd": 1
+  },
+  {
    "default": "eth0",
    "fieldname": "private_vlan_link",
    "fieldtype": "Data",
@@ -122,7 +131,7 @@
    "link_fieldname": "node"
   }
  ],
- "modified": "2025-06-13 13:18:30.287722",
+ "modified": "2025-06-13 14:19:55.572229",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Node",
