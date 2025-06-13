@@ -8,10 +8,13 @@
   "status",
   "network_section",
   "public_ip_address",
+  "public_interface",
+  "private_interface",
   "column_break_tacb",
   "private_ip_address",
   "private_vlan_id",
   "private_mac_address",
+  "private_vlan_link",
   "ssh_section",
   "ssh_user",
   "root_public_key"
@@ -85,6 +88,29 @@
    "fieldname": "ssh_user",
    "fieldtype": "Data",
    "label": "SSH User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "public_interface",
+   "fieldtype": "Data",
+   "label": "Public Interface",
+   "reqd": 1
+  },
+  {
+   "fieldname": "private_interface",
+   "fieldtype": "Data",
+   "label": "Private Interface",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_wjwi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "eth0",
+   "fieldname": "private_vlan_link",
+   "fieldtype": "Data",
+   "label": "Private VLAN Link",
    "reqd": 1
   }
  ],

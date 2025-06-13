@@ -1,8 +1,8 @@
 network:
   version: 2
   vlans:
-    private:
+    "{{ node.private_interface }}":
       id: "{{ node.private_vlan_id }}"
-      link: eth0 # This is a placeholder, it should be replaced by the actual interface name
+      link: "{{ node.private_vlan_link }}"
       addresses:
         - "{{ node.private_ip_address }}/24"
