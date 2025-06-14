@@ -199,3 +199,13 @@ def install():
 			print(f"Install request for {name} accepted.")
 		else:
 			print(f"Failed to install {name}: {response.status_code} : {response.text}")
+
+
+def update():
+	for node in NODES:
+		frappe.enqueue_doc(
+			"Node",
+			node["name"],
+			"update_agent",
+			timeout=600,
+		)

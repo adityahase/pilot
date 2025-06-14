@@ -6,6 +6,7 @@ frappe.ui.form.on("Node", {
 		const actions = [
 			[__("Ping"), "ping", false],
 			[__("Setup"), "setup", true],
+			[__("Update Agent"), "update_agent", true],
 		];
 
 		for (const [label, method, confirm] of actions) {

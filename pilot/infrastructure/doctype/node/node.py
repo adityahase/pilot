@@ -16,6 +16,10 @@ class Node(Document):
 	def setup(self):
 		self.ansible("node.yml", variables={"node": self.as_dict()}).run()
 
+	@frappe.whitelist()
+	def update_agent(self):
+		self.ansible("agent.yml").run()
+
 	def ansible(self, playbook, variables=None):
 		return Ansible(self, playbook=playbook, user=self.ssh_user, variables=variables)
 
