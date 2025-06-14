@@ -1,14 +1,8 @@
 from agent.images.firecracker import Firecracker
 from agent.images.ubuntu import Ubuntu
-from agent.network import FirecrackerBridge
-
-EGRESS_INTERFACE = "eth0"
 
 
 async def startup():
-	bridge = FirecrackerBridge(egress_interface=EGRESS_INTERFACE)
-	await bridge.setup()
-
 	firecracker_artifacts = [
 		(
 			"https://s3.amazonaws.com/spec.ccfc.min/firecracker-ci/v1.12/x86_64/vmlinux-5.10.233",
