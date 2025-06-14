@@ -70,6 +70,7 @@ class FirecrackerBridge:
 	async def run(self, cmd):
 		args = shlex.split(cmd)
 		args = ["chroot", CHROOT_PATH, *args]
+		print(f"Command: {cmd}")
 		process = await asyncio.create_subprocess_exec(
 			*args,
 			stdin=asyncio.subprocess.DEVNULL,
@@ -78,5 +79,8 @@ class FirecrackerBridge:
 		)
 		await process.wait()
 		if process.returncode != 0:
+			print(f"Command finished with return code {process.returncode}")
+			print(f"Command output: {await process.stdout.read()}")
+			print(f"Command error: {await process.stderr.read()}")
 			raise SubprocessError
 		return process
