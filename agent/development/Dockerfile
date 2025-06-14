@@ -22,7 +22,9 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -e /agent
 RUN echo 1
 RUN mkdir -p /root/.local/share/code-server/User && \
     cp /agent/development/settings.json /root/.local/share/code-server/User/settings.json && \
-    rm /agent/.vscode/settings.json
+    rm /agent/.vscode/settings.json && \
+    rm -rf /agent/.overmind
+
 WORKDIR /agent
 ENTRYPOINT [ "overmind" ]
 CMD ["start", "-f", "development/Procfile", "--no-port", "-c", "web", "-r", "web"]
