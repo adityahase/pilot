@@ -80,7 +80,8 @@ class VirtualMachine(Document):
 
 	@property
 	def agent(self):
-		return Agent("localhost:8000")  # TODO: Replace with Node ip or hostname
+		index = int(self.node.split(".")[0][-1])
+		return Agent(f"localhost:{18000 + index}")  # TODO: Replace with Node ip or hostname
 
 	def set_meta_data(self):
 		meta_data = {
