@@ -90,7 +90,7 @@ class Machine:
 		network = data.get("network")
 		self.tap_device = network["tap_device"]
 		boot = data.get("boot")
-		if "meta-data" not in data:
+		if "meta-data" in data:
 			config["drives"].append(
 				{
 					"drive_id": "cloud-init",
@@ -131,7 +131,7 @@ class Machine:
 		await self.setup_kernel()
 		await self.setup_initrd()
 		await self.setup_rootfs()
-		await self.setup_tap_device()
+		await self.setup_network()
 
 	async def setup_config(self, config: dict):
 		os.makedirs(os.path.join(CHROOT_PATH, self.root.lstrip("/")), exist_ok=True)
@@ -186,9 +186,25 @@ class Machine:
 		await self.run(f"chown {self.uid}:{self.gid} {self.rootfs_file}")
 		await self.run(f"chmod 600 {self.rootfs_file}")
 
-	async def setup_tap_device(self):
+	async def setup_network(self):
+		from agent.network import FirecrackerBridge
+
+		cluster = self.config["network"]["cluster"]
+		bridge = FirecrackerBridge(
+			name=cluster["bridge"],
+			vxlan=cluster["vxlan"],
+			vni=cluster["vni"],
+			cidr_block=cluster["cidr_block"],
+			egress_interface=cluster["public_interface"],
+			private_interface=cluster["private_interface"],
+			multicast_address=cluster["multicast_address"],
+		)
+		await bridge.setup()
+		await self.setup_tap_device(bridge.name)
+
+	async def setup_tap_device(self, bridge_name):
 		await self.run(f"ip tuntap add dev {self.tap_device} mode tap")
-		await self.run(f"ip link set dev {self.tap_device} master firecracker0")
+		await self.run(f"ip link set dev {self.tap_device} master {bridge_name}")
 		await self.run(f"ip link set dev {self.tap_device} up")
 
 	async def delete_tap_device(self):
@@ -213,6 +229,7 @@ class Machine:
 	async def run(self, cmd):
 		args = shlex.split(cmd)
 		args = ["chroot", CHROOT_PATH, *args]
+		print(f"Command: {cmd}")
 		process = await asyncio.create_subprocess_exec(
 			*args,
 			stdin=asyncio.subprocess.DEVNULL,
@@ -221,6 +238,9 @@ class Machine:
 		)
 		await process.wait()
 		if process.returncode != 0:
+			print(f"Command finished with return code {process.returncode}")
+			print(f"Command output: {await process.stdout.read()}")
+			print(f"Command error: {await process.stderr.read()}")
 			raise SubprocessError
 		return process
 
@@ -259,13 +279,17 @@ class FirecrackerClient:
 		self.base_url = f"http+unix://{socket.replace('/', '%2F')}"
 
 	def get(self, endpoint):
+		print("GET", endpoint)
 		return self.session.get(f"{self.base_url}{endpoint}")
 
 	def put(self, endpoint, json=None):
+		print("PUT", endpoint, json)
 		return self.session.put(f"{self.base_url}{endpoint}", json=json)
 
 	def patch(self, endpoint, json=None):
+		print("PATCH", endpoint, json)
 		return self.session.patch(f"{self.base_url}{endpoint}", json=json)
 
 	def post(self, endpoint, json=None):
+		print("POST", endpoint, json)
 		return self.session.post(f"{self.base_url}{endpoint}", json=json)
