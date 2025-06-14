@@ -66,6 +66,7 @@ class VirtualMachine(Document):
 				"disk": self.disk,
 			},
 			"network": {
+				"cluster": self.get_cluster_details(),
 				"tap_device": self.tap_device,
 				"mac_address": self.mac_address,
 				"ip_address": self.ip_address,
@@ -157,3 +158,16 @@ class VirtualMachine(Document):
 		}
 		network_config = yaml.dump(network_config)
 		self.network_config = f"#cloud-config\n{network_config}"
+
+	def get_cluster_details(self):
+		cluster = frappe.get_doc("Cluster", self.cluster)
+		node = frappe.get_doc("Node", self.node)
+		return {
+			"cidr_block": cluster.cidr_block,
+			"bridge": cluster.bridge,
+			"vxlan": cluster.vxlan,
+			"vni": cluster.vni,
+			"multicast_address": node.multicast_address,
+			"private_interface": node.private_interface,
+			"public_interface": node.public_interface,
+		}

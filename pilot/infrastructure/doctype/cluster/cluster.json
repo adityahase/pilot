@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "UUID",
+ "creation": "2025-06-12 17:02:28.550023",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "cidr_block",
+  "bridge",
+  "column_break_szle",
+  "vxlan",
+  "vni"
+ ],
+ "fields": [
+  {
+   "fieldname": "bridge",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Bridge",
+   "read_only": 1
+  },
+  {
+   "default": "10.10.0.0/16",
+   "fieldname": "cidr_block",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "CIDR Block",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_szle",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vxlan",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "VXLAN",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vni",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "VNI",
+   "non_negative": 1,
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Virtual Machine",
+   "link_fieldname": "cluster"
+  }
+ ],
+ "modified": "2025-06-14 19:56:31.991834",
+ "modified_by": "Administrator",
+ "module": "Infrastructure",
+ "name": "Cluster",
+ "naming_rule": "UUID",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

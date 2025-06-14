@@ -187,10 +187,10 @@ class Machine:
 		await self.run(f"chmod 600 {self.rootfs_file}")
 
 	async def setup_network(self):
-		from agent.network import FirecrackerBridge
+		from agent.network import Bridge
 
 		cluster = self.config["network"]["cluster"]
-		bridge = FirecrackerBridge(
+		bridge = Bridge(
 			name=cluster["bridge"],
 			vxlan=cluster["vxlan"],
 			vni=cluster["vni"],

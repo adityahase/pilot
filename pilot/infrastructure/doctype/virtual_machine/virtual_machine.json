@@ -14,13 +14,14 @@
   "root_filesystem",
   "initial_ram_disk",
   "networking_section",
-  "ip_address",
+  "cluster",
+  "subnet_cidr_block",
   "gateway",
   "subnet_mask",
   "column_break_rzbo",
+  "ip_address",
   "mac_address",
   "tap_device",
-  "subnet_cidr_block",
   "resources_section",
   "vcpu",
   "disk",
@@ -169,6 +170,7 @@
    "label": "Initial Ram Disk"
   },
   {
+   "collapsible": 1,
    "fieldname": "metadata_section",
    "fieldtype": "Section Break",
    "label": "cloud-init"
@@ -221,7 +223,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "10.0.0.0/24",
+   "fetch_from": "cluster.cidr_block",
    "fieldname": "subnet_cidr_block",
    "fieldtype": "Data",
    "label": "Subnet CIDR Block",
@@ -234,12 +236,21 @@
    "label": "Network Config",
    "options": "YAML",
    "read_only": 1
+  },
+  {
+   "fieldname": "cluster",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Cluster",
+   "options": "Cluster",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-12 10:04:39.125651",
+ "modified": "2025-06-14 19:20:05.614652",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",

@@ -1,6 +1,8 @@
 # Copyright (c) 2025, Frappe and contributors
 # For license information, please see license.txt
 
+import ipaddress
+
 import frappe
 from frappe.model.document import Document
 
@@ -8,6 +10,9 @@ from pilot.infrastructure.ansible import Ansible
 
 
 class Node(Document):
+	def before_insert(self):
+		self.multicast_address = str(ipaddress.IPv4Network(self.multicast_cidr_block)[1])
+
 	@frappe.whitelist()
 	def ping(self):
 		self.ansible("ping.yml").run()

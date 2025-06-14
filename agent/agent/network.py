@@ -4,16 +4,33 @@ import shlex
 from agent.machine import CHROOT_PATH, SubprocessError
 
 
-class FirecrackerBridge:
-	def __init__(self, egress_interface):
-		self.name = "firecracker0"
-		self.cidr = "10.0.0.1/24"
+class Bridge:
+	def __init__(
+		self,
+		name,
+		cidr_block=None,
+		vxlan=None,
+		vni=None,
+		egress_interface=None,
+		private_interface=None,
+		multicast_address=None,
+	):
+		self.name = name
+		self.cidr = cidr_block
+
+		self.vxlan = vxlan
+		self.vni = vni
+
 		self.egress_interface = egress_interface
+		self.private_interface = private_interface
+
+		self.multicast_address = multicast_address
 
 	async def setup(self):
 		await self.setup_bridge()
 		await self.setup_forwarding()
 		await self.setup_masquerading()
+		await self.setup_vxlan()
 
 	async def setup_bridge(self):
 		if await self.bridge_exists():
@@ -63,6 +80,33 @@ class FirecrackerBridge:
 				"iptables --table nat --check POSTROUTING "
 				f"--out-interface {self.egress_interface} -j MASQUERADE"
 			)
+			return True
+		except SubprocessError:
+			return False
+
+	async def setup_vxlan(self):
+		if await self.vxlan_exists():
+			return
+		else:
+			commands = [
+				# Create the VXLAN interface
+				(
+					f"ip link add name {self.vxlan} type vxlan "
+					f"id {self.vni} dstport 4789 "
+					f"group {self.multicast_address} "
+					f"dev {self.private_interface} learning"
+				),
+				# Attach the VXLAN interface to the bridge
+				f"ip link set dev {self.vxlan} master {self.name}",
+				# Bring the VXLAN interface up
+				f"ip link set dev {self.vxlan} up",
+			]
+			for cmd in commands:
+				await self.run(cmd)
+
+	async def vxlan_exists(self):
+		try:
+			await self.run(f"ip link show {self.vxlan}")
 			return True
 		except SubprocessError:
 			return False
