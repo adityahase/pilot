@@ -163,7 +163,7 @@ class VirtualMachine(Document):
 		cluster = frappe.get_doc("Cluster", self.cluster)
 		node = frappe.get_doc("Node", self.node)
 		return {
-			"cidr_block": cluster.cidr_block,
+			"gateway": cluster.gateway,
 			"bridge": cluster.bridge,
 			"vxlan": cluster.vxlan,
 			"vni": cluster.vni,

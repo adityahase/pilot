@@ -8,6 +8,7 @@
  "field_order": [
   "cidr_block",
   "bridge",
+  "gateway",
   "column_break_szle",
   "vxlan",
   "vni"
@@ -51,6 +52,15 @@
    "label": "VNI",
    "non_negative": 1,
    "read_only": 1
+  },
+  {
+   "default": "10.10.0.1/16",
+   "fieldname": "gateway",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Gateway",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -61,7 +71,7 @@
    "link_fieldname": "cluster"
   }
  ],
- "modified": "2025-06-14 19:56:31.991834",
+ "modified": "2025-06-15 14:42:59.731823",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Cluster",

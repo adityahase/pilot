@@ -194,7 +194,7 @@ class Machine:
 			name=cluster["bridge"],
 			vxlan=cluster["vxlan"],
 			vni=cluster["vni"],
-			cidr_block=cluster["cidr_block"],
+			gateway=cluster["gateway"],
 			egress_interface=cluster["public_interface"],
 			private_interface=cluster["private_interface"],
 			multicast_address=cluster["multicast_address"],

@@ -8,7 +8,7 @@ class Bridge:
 	def __init__(
 		self,
 		name,
-		cidr_block=None,
+		gateway=None,
 		vxlan=None,
 		vni=None,
 		egress_interface=None,
@@ -16,7 +16,7 @@ class Bridge:
 		multicast_address=None,
 	):
 		self.name = name
-		self.cidr = cidr_block
+		self.gateway = gateway
 
 		self.vxlan = vxlan
 		self.vni = vni
@@ -40,7 +40,7 @@ class Bridge:
 				# Create the bridge interface
 				f"ip link add name {self.name} type bridge",
 				# Assign IP address to the bridge
-				f"ip addr add {self.cidr} dev {self.name}",
+				f"ip addr add {self.gateway} dev {self.name}",
 				# Bring the bridge interface up
 				f"ip link set dev {self.name} up",
 			]
