@@ -18,6 +18,10 @@
   "multicast_cidr_block",
   "multicast_address",
   "private_vlan_link",
+  "wireguard_section",
+  "wireguard_ip_address",
+  "column_break_etyv",
+  "wireguard_public_key",
   "ssh_section",
   "ssh_user",
   "root_public_key"
@@ -76,6 +80,7 @@
    "set_only_once": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "ssh_section",
    "fieldtype": "Section Break",
    "label": "SSH"
@@ -131,6 +136,29 @@
    "label": "Multicast Address",
    "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "wireguard_section",
+   "fieldtype": "Section Break",
+   "label": "Wireguard"
+  },
+  {
+   "fieldname": "column_break_etyv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "wireguard_public_key",
+   "fieldtype": "Data",
+   "label": "Wireguard Public Key",
+   "read_only": 1
+  },
+  {
+   "fieldname": "wireguard_ip_address",
+   "fieldtype": "Data",
+   "label": "Wireguard IP Address",
+   "reqd": 1,
+   "set_only_once": 1
   }
  ],
  "grid_page_length": 50,
@@ -141,7 +169,7 @@
    "link_fieldname": "node"
   }
  ],
- "modified": "2025-06-14 19:58:12.906052",
+ "modified": "2025-06-16 16:23:20.979848",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Node",

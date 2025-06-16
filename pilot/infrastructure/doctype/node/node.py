@@ -19,7 +19,20 @@ class Node(Document):
 
 	@frappe.whitelist()
 	def setup(self):
-		self.ansible("node.yml", variables={"node": self.as_dict()}).run()
+		pilot = frappe.get_doc("Pilot Settings")
+		variables = {
+			"node": self.as_dict(),
+			"pilot": {
+				"wireguard_public_key": pilot.wireguard_public_key,
+				"wireguard_ip_address": pilot.wireguard_ip_address,
+			},
+		}
+		play = self.ansible("node.yml", variables=variables).run()
+		if play and not self.wireguard_public_key:
+			self.wireguard_public_key = frappe.get_doc(
+				"Ansible Task", {"play": play.name, "task": "Generate Wireguard public key"}
+			).output.strip()
+			self.save()
 
 	@frappe.whitelist()
 	def update_agent(self):

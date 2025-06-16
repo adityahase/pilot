@@ -1,0 +1,42 @@
+---
+- name: Install Wireguard
+  ansible.builtin.apt:
+    name: wireguard
+    state: present
+    update_cache: yes
+
+- name: Generate Wireguard private key
+  ansible.builtin.shell: umask 077 && wg genkey > /etc/wireguard/private.key
+  args:
+    creates: /etc/wireguard/private.key
+
+- name: Read Wireguard private key
+  ansible.builtin.slurp:
+    src: /etc/wireguard/private.key
+  register: wireguard_private_key
+
+- name: Generate Wireguard public key
+  ansible.builtin.shell: cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key
+
+- name: Setup wireguard configuration
+  ansible.builtin.template:
+    src: wg.conf
+    dest: /etc/wireguard/wg0.conf
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Delete Wireguard interface
+  ansible.builtin.shell: wg-quick down wg0
+  ignore_errors: true
+
+- name: Setup Wireguard interface
+  # Bring up wireguard interface and shut it down to ensure the configuration is applied
+  # This will create the wg-quick@wg0 service
+  ansible.builtin.shell: wg-quick up wg0 && wg-quick down wg0
+
+- name: Setup Wireguard service
+  ansible.builtin.systemd:
+    name: wg-quick@wg0
+    state: restarted
+    enabled: true

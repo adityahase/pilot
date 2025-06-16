@@ -14,6 +14,7 @@ NODES = [
 		"private_interface": " private",
 		"private_vlan_link": "eth0",
 		"ssh_user": "ubuntu",
+		"wireguard_ip_address": "10.8.0.101",
 		"status": "Active",
 	},
 	{
@@ -26,6 +27,7 @@ NODES = [
 		"private_interface": "private",
 		"private_vlan_link": "eth0",
 		"ssh_user": "ubuntu",
+		"wireguard_ip_address": "10.8.0.102",
 		"status": "Active",
 	},
 	{
@@ -38,6 +40,7 @@ NODES = [
 		"private_interface": "private",
 		"private_vlan_link": "eth0",
 		"ssh_user": "ubuntu",
+		"wireguard_ip_address": "10.8.0.103",
 		"status": "Active",
 	},
 	{
@@ -50,6 +53,7 @@ NODES = [
 		"private_interface": "eth1",
 		"private_vlan_link": "fake_vlan_link",
 		"ssh_user": "root",
+		"wireguard_ip_address": "10.8.0.104",
 		"status": "Active",
 	},
 ]

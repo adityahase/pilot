@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-06-16 15:29:37.975082",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "wireguard_section",
+  "wireguard_ip_address",
+  "wireguard_cidr",
+  "wireguard_public_key",
+  "wireguard_private_key",
+  "column_break_jorz",
+  "wireguard_config"
+ ],
+ "fields": [
+  {
+   "fieldname": "wireguard_section",
+   "fieldtype": "Section Break",
+   "label": "Wireguard"
+  },
+  {
+   "default": "10.8.0.0/24",
+   "fieldname": "wireguard_cidr",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Wireguard CIDR",
+   "reqd": 1
+  },
+  {
+   "fieldname": "wireguard_public_key",
+   "fieldtype": "Data",
+   "label": "Wireguard Public Key",
+   "read_only": 1
+  },
+  {
+   "fieldname": "wireguard_private_key",
+   "fieldtype": "Password",
+   "label": "Wireguard Private Key",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_jorz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "wireguard_config",
+   "fieldtype": "Code",
+   "label": "Wireguard Config",
+   "read_only": 1
+  },
+  {
+   "fieldname": "wireguard_ip_address",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Wireguard IP Address",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-06-16 16:10:58.862007",
+ "modified_by": "Administrator",
+ "module": "Pilot",
+ "name": "Pilot Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

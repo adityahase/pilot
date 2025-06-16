@@ -9,4 +9,5 @@
     - role: network
     - role: firecracker
     - role: docker
+    - role: wireguard
     - role: agent
