@@ -81,8 +81,8 @@ class VirtualMachine(Document):
 
 	@property
 	def agent(self):
-		index = int(self.node.split(".")[0][-1])
-		return Agent(f"localhost:{18000 + index}")  # TODO: Replace with Node ip or hostname
+		wireguard_ip = frappe.db.get_value("Node", self.node, "wireguard_ip_address")
+		return Agent(f"{wireguard_ip}:8000")  # TODO: Replace with Node ip or hostname
 
 	def set_meta_data(self):
 		meta_data = {

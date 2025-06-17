@@ -36,4 +36,4 @@
   ignore_errors: true
 
 - name: Run Agent container
-  command: "docker run --detach --privileged --net=host --pid=host -v /:/host --restart always --name agent agent"
+  command: "docker run --detach --env WIREGUARD_IP_ADDRESS={{ node.wireguard_ip_address }} --privileged --net=host --pid=host -v /:/host --restart always --name agent agent"

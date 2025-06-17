@@ -1,2 +1,2 @@
-web: QUART_APP=agent.web:app quart run --host 127.0.0.1 --port 8000 --reload
-code: PASSWORD=code PORT=8080 code-server --bind-addr 127.0.0.1:8080 --open /agent
+web: QUART_APP=agent.web:app quart run --host $WIREGUARD_IP_ADDRESS --port 8000 --reload
+code: PASSWORD=code PORT=8080 code-server --bind-addr $WIREGUARD_IP_ADDRESS:8080 --open /agent
