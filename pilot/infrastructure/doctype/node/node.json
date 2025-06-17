@@ -20,6 +20,7 @@
   "private_vlan_link",
   "wireguard_section",
   "wireguard_ip_address",
+  "wireguard_interface",
   "column_break_etyv",
   "wireguard_public_key",
   "ssh_section",
@@ -159,6 +160,13 @@
    "label": "Wireguard IP Address",
    "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "default": "wg0",
+   "fieldname": "wireguard_interface",
+   "fieldtype": "Data",
+   "label": "Wireguard Interface",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -169,7 +177,7 @@
    "link_fieldname": "node"
   }
  ],
- "modified": "2025-06-16 16:23:20.979848",
+ "modified": "2025-06-17 08:16:39.841825",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Node",

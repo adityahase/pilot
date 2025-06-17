@@ -21,22 +21,22 @@
 - name: Setup wireguard configuration
   ansible.builtin.template:
     src: wg.conf
-    dest: /etc/wireguard/wg0.conf
+    dest: "/etc/wireguard/{{ node.wireguard_interface }}.conf"
     owner: root
     group: root
     mode: 0600
 
 - name: Delete Wireguard interface
-  ansible.builtin.shell: wg-quick down wg0
+  ansible.builtin.shell: "wg-quick down {{ node.wireguard_interface }}"
   ignore_errors: true
 
 - name: Setup Wireguard interface
   # Bring up wireguard interface and shut it down to ensure the configuration is applied
   # This will create the wg-quick@wg0 service
-  ansible.builtin.shell: wg-quick up wg0 && wg-quick down wg0
+  ansible.builtin.shell: "wg-quick up {{ node.wireguard_interface }} && wg-quick down {{ node.wireguard_interface }}"
 
 - name: Setup Wireguard service
   ansible.builtin.systemd:
-    name: wg-quick@wg0
+    name: "wg-quick@{{ node.wireguard_interface }}"
     state: restarted
     enabled: true
