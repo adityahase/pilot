@@ -46,6 +46,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
+   "no_copy": 1,
    "options": "Draft\nRunning\nStopped\nTerminated",
    "read_only": 1,
    "reqd": 1
@@ -72,7 +73,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "IP Address"
+   "label": "IP Address",
+   "no_copy": 1
   },
   {
    "fieldname": "column_break_rzbo",
@@ -140,6 +142,7 @@
    "fieldname": "tap_device",
    "fieldtype": "Data",
    "label": "TAP Device",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -250,7 +253,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-14 19:20:05.614652",
+ "modified": "2025-06-17 12:56:58.382757",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",

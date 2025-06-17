@@ -116,7 +116,7 @@ class VirtualMachine(Document):
 		if not self.ip_address:
 			machines = frappe.db.count(
 				"Virtual Machine",
-				{"status": ("!=", "Terminated"), "node": self.node},
+				{"status": ("!=", "Terminated"), "cluster": self.cluster},
 			)
 
 			# Skip the first two addresses in the network.
