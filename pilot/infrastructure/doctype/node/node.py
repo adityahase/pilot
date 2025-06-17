@@ -20,12 +20,26 @@ class Node(Document):
 	@frappe.whitelist()
 	def setup(self):
 		pilot = frappe.get_doc("Pilot Settings")
+		peers = frappe.get_all(
+			"Node",
+			fields=["name", "wireguard_public_key", "wireguard_ip_address", "private_ip_address"],
+			filters={
+				"status": "Active",
+				"name": ["!=", self.name],
+				"wireguard_public_key": ["is", "set"],
+				"wireguard_ip_address": ["is", "set"],
+				"private_ip_address": ["is", "set"],
+			},
+			order_by="name asc",
+		)
+
 		variables = {
-			"node": self.as_dict(),
+			"node": self.as_dict(convert_dates_to_str=True),
 			"pilot": {
 				"wireguard_public_key": pilot.wireguard_public_key,
 				"wireguard_ip_address": pilot.wireguard_ip_address,
 			},
+			"peers": peers,
 		}
 		play = self.ansible("node.yml", variables=variables).run()
 		if play and not self.wireguard_public_key:
@@ -36,7 +50,10 @@ class Node(Document):
 
 	@frappe.whitelist()
 	def update_agent(self):
-		self.ansible("agent.yml").run()
+		self.ansible(
+			"agent.yml",
+			variables={"node": self.as_dict(convert_dates_to_str=True)},
+		).run()
 
 	def ansible(self, playbook, variables=None):
 		return Ansible(self, playbook=playbook, user=self.ssh_user, variables=variables)
