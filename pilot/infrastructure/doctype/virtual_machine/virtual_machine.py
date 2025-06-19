@@ -152,6 +152,7 @@ class VirtualMachine(Document):
 						"nameservers": {"addresses": ["8.8.8.8", "8.8.4.4"]},
 						"dhcp4": False,
 						"dhcp6": False,
+						"mtu": 1450,  # 1500 - 50 byte (VXLAN overhead)
 					}
 				},
 			}
