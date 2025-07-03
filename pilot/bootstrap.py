@@ -213,3 +213,15 @@ def update():
 			"update_agent",
 			timeout=600,
 		)
+
+
+def run_setup():
+	for node in NODES:
+		if "d1." in node["name"]:
+			continue
+		frappe.enqueue_doc(
+			"Node",
+			node["name"],
+			"setup",
+			timeout=600,
+		)

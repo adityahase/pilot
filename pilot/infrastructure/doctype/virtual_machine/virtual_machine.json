@@ -27,6 +27,8 @@
   "disk",
   "column_break_rexw",
   "memory",
+  "storage_section",
+  "disks",
   "metadata_section",
   "ssh_key",
   "user_data",
@@ -248,12 +250,23 @@
    "label": "Cluster",
    "options": "Cluster",
    "reqd": 1
+  },
+  {
+   "fieldname": "storage_section",
+   "fieldtype": "Section Break",
+   "label": "Storage"
+  },
+  {
+   "fieldname": "disks",
+   "fieldtype": "Table",
+   "label": "Disks",
+   "options": "Virtual Machine Disk"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-17 12:56:58.382757",
+ "modified": "2025-06-17 13:51:17.273756",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",
