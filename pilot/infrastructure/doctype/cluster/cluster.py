@@ -17,3 +17,4 @@ class Cluster(Document):
 		self.bridge = f"br-{cluster_count}"
 		network = ipaddress.IPv4Network(self.cidr_block)
 		self.gateway = f"{network[1]!s}/{network.prefixlen}"
+		self.network_namespace = f"vpc-{cluster_count}"

@@ -72,6 +72,7 @@ class VirtualMachine(Document):
 				"ip_address": self.ip_address,
 				"gateway": self.gateway,
 				"subnet_mask": self.subnet_mask,
+				"namespace": self.network_namespace,
 			},
 			"isolation": {
 				"user_id": self.user_id,
@@ -171,4 +172,5 @@ class VirtualMachine(Document):
 			"multicast_address": node.multicast_address,
 			"private_interface": node.private_interface,
 			"public_interface": node.public_interface,
+			"network_namespace": cluster.network_namespace,
 		}

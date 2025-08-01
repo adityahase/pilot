@@ -31,6 +31,7 @@ class Machine:
 		self.stdout_file = f"{self.root}/stdout.log"
 		self.stderr_file = f"{self.root}/stderr.log"
 		self.tap_device = None
+		self.network_namespace = None
 		self.config = {}
 
 	@classmethod
@@ -89,6 +90,7 @@ class Machine:
 		config = copy.deepcopy(DEFAULT_CONFIG)
 		network = data.get("network")
 		self.tap_device = network["tap_device"]
+		self.network_namespace = network["namespace"]
 		boot = data.get("boot")
 		if "meta-data" in data:
 			config["drives"].append(
@@ -198,18 +200,19 @@ class Machine:
 			egress_interface=cluster["public_interface"],
 			private_interface=cluster["private_interface"],
 			multicast_address=cluster["multicast_address"],
+			namespace=cluster["network_namespace"],
 		)
 		await bridge.setup()
 		await self.setup_tap_device(bridge.name)
 
 	async def setup_tap_device(self, bridge_name):
-		await self.run(f"ip tuntap add dev {self.tap_device} mode tap")
-		await self.run(f"ip link set dev {self.tap_device} master {bridge_name}")
-		await self.run(f"ip link set dev {self.tap_device} up")
+		await self.run(f"ip netns exec {self.network_namespace} ip tuntap add dev {self.tap_device} mode tap")
+		await self.run(f"ip netns exec {self.network_namespace} ip link set dev {self.tap_device} master {bridge_name}")
+		await self.run(f"ip netns exec {self.network_namespace} ip link set dev {self.tap_device} up")
 
 	async def delete_tap_device(self):
 		try:
-			await self.run(f"ip link del {self.tap_device}")
+			await self.run(f"ip netns exec {self.network_namespace} ip link del {self.tap_device}")
 		except Exception as e:
 			print(f"Error deleting tap device {self.tap_device}: {e}")
 
@@ -219,6 +222,7 @@ class Machine:
 			f"--property=StandardOutput=file:{self.stdout_file} "
 			f"--property=StandardError=file:{self.stderr_file} "
 			f"jailer --id {self.name} --uid {self.uid} --gid {self.gid} "
+			f" --netns /var/run/netns/{self.network_namespace} "
 			f"--exec-file {FIRECRACKER_BINARY} "
 			f"--chroot-base-dir {JAILER_ROOT} "
 			f"-- --api-sock firecracker.socket --config-file config.json"

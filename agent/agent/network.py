@@ -14,6 +14,7 @@ class Bridge:
 		egress_interface=None,
 		private_interface=None,
 		multicast_address=None,
+		namespace=None,
 	):
 		self.name = name
 		self.gateway = gateway
@@ -25,12 +26,34 @@ class Bridge:
 		self.private_interface = private_interface
 
 		self.multicast_address = multicast_address
+		self.namespace = namespace
 
 	async def setup(self):
+		await self.setup_namespace()
 		await self.setup_bridge()
 		await self.setup_forwarding()
 		await self.setup_masquerading()
 		await self.setup_vxlan()
+
+	async def setup_namespace(self):
+		if await self.namespace_exists():
+			return
+		else:
+			commands = [
+				# Create the namespace
+				f"ip netns add {self.namespace} type namespace",
+				# Bring up loopback interface
+				f"ip netns exec {self.namespace} ip link set dev lo up",
+			]
+			for cmd in commands:
+				await self.run(cmd)
+
+	async def namespace_exists(self):
+		try:
+			await self.run(f"ip netns exec {self.namespace} ip addr")
+			return True
+		except SubprocessError:
+			return False
 
 	async def setup_bridge(self):
 		if await self.bridge_exists():
@@ -38,18 +61,18 @@ class Bridge:
 		else:
 			commands = [
 				# Create the bridge interface
-				f"ip link add name {self.name} type bridge",
+				f"ip netns exec {self.namespace} ip link add name {self.name} type bridge",
 				# Assign IP address to the bridge
-				f"ip addr add {self.gateway} dev {self.name}",
+				f"ip netns exec {self.namespace} ip addr add {self.gateway} dev {self.name}",
 				# Bring the bridge interface up
-				f"ip link set dev {self.name} up",
+				f"ip netns exec {self.namespace} ip link set dev {self.name} up",
 			]
 			for cmd in commands:
 				await self.run(cmd)
 
 	async def bridge_exists(self):
 		try:
-			await self.run(f"ip link show {self.name}")
+			await self.run(f"ip netns exec {self.namespace} ip link show {self.name}")
 			return True
 		except SubprocessError:
 			return False
@@ -58,11 +81,11 @@ class Bridge:
 		await self.run("sysctl -w net.ipv4.ip_forward=1")
 		await self.run("iptables -P FORWARD ACCEPT")
 		if not await self.is_forwarding():
-			await self.run(f"iptables --insert FORWARD --in-interface {self.name} -j ACCEPT")
+			await self.run(f"ip netns exec {self.namespace} iptables --insert FORWARD --in-interface {self.name} -j ACCEPT")
 
 	async def is_forwarding(self):
 		try:
-			await self.run(f"iptables --check FORWARD --in-interface {self.name} -j ACCEPT")
+			await self.run(f"ip netns exec {self.namespace} iptables --check FORWARD --in-interface {self.name} -j ACCEPT")
 			return True
 		except SubprocessError:
 			return False
@@ -89,24 +112,26 @@ class Bridge:
 			return
 		else:
 			commands = [
-				# Create the VXLAN interface
+				# Create the VXLAN interface outside the namespace
 				(
 					f"ip link add name {self.vxlan} type vxlan "
 					f"id {self.vni} dstport 4789 "
 					f"group {self.multicast_address} "
 					f"dev {self.private_interface} learning"
 				),
+				# Move the VXLAN interface into the namespace
+				f"ip link set {self.vxlan} netns {self.namespace}",
 				# Attach the VXLAN interface to the bridge
-				f"ip link set dev {self.vxlan} master {self.name}",
+				f"ip netns exec {self.namespace} ip link set dev {self.vxlan} master {self.name}",
 				# Bring the VXLAN interface up
-				f"ip link set dev {self.vxlan} up",
+				f"ip netns exec {self.namespace} ip link set dev {self.vxlan} up",
 			]
 			for cmd in commands:
 				await self.run(cmd)
 
 	async def vxlan_exists(self):
 		try:
-			await self.run(f"ip link show {self.vxlan}")
+			await self.run(f"ip netns exec {self.namespace} ip link show {self.vxlan}")
 			return True
 		except SubprocessError:
 			return False

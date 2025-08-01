@@ -37,6 +37,7 @@
   "network_config",
   "isolation_section",
   "user_id",
+  "network_namespace",
   "column_break_rzgl",
   "group_id"
  ],
@@ -261,12 +262,20 @@
    "fieldtype": "Table",
    "label": "Disks",
    "options": "Virtual Machine Disk"
+  },
+  {
+   "fetch_from": "cluster.network_namespace",
+   "fieldname": "network_namespace",
+   "fieldtype": "Data",
+   "label": "Network Namespace",
+   "no_copy": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-17 13:51:17.273756",
+ "modified": "2025-08-01 15:38:51.177440",
  "modified_by": "Administrator",
  "module": "Infrastructure",
  "name": "Virtual Machine",
